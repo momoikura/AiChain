@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: #05070d;
+  color: #e6edf5;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: #05070d;
+  background-image:
+    radial-gradient(900px circle at 15% -10%, rgba(34, 227, 155, 0.06), transparent 45%),
+    radial-gradient(800px circle at 100% 0%, rgba(77, 157, 255, 0.06), transparent 40%),
+    radial-gradient(1000px circle at 50% 120%, rgba(155, 123, 255, 0.05), transparent 50%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Glass surface primitive */
+.glass {
+  background: linear-gradient(180deg, rgba(21, 31, 52, 0.55), rgba(11, 15, 28, 0.55));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.glass-hover {
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.glass-hover:hover {
+  border-color: rgba(34, 227, 155, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 24px rgba(34, 227, 155, 0.08);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+  background-clip: content-box;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
+
+.text-glow-green {
+  text-shadow: 0 0 12px rgba(34, 227, 155, 0.5);
+}
+.text-glow-red {
+  text-shadow: 0 0 12px rgba(255, 84, 112, 0.5);
+}
+
+/* Live dot */
+.live-dot {
+  position: relative;
+}
+.live-dot::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  animation: pulseRing 2s infinite;
+}

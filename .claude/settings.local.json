@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s http://localhost:3000/signals)",
+      "Bash(npx --yes tsx scripts/probe.ts)",
+      "Bash(npm run *)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(rm -f .env.local)",
+      "Bash(rm -rf .next)",
+      "Bash(nohup npm run start)"
+    ]
+  }
+}

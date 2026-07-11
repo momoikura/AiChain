@@ -1,0 +1,105 @@
+import { Rng } from "@/lib/rng";
+
+type NodeKind = "token" | "smart-money" | "whale" | "vc" | "exchange" | "team";
+
+const KIND_COLOR: Record<NodeKind, string> = {
+  token: "#22e39b",
+  "smart-money": "#4d9dff",
+  whale: "#9b7bff",
+  vc: "#f5c542",
+  exchange: "#ff5470",
+  team: "#38e8e0",
+};
+
+const KIND_LABEL: Record<NodeKind, string> = {
+  token: "Token",
+  "smart-money": "Smart money",
+  whale: "Whale",
+  vc: "VC",
+  exchange: "Exchange",
+  team: "Team",
+};
+
+/**
+ * Deterministic wallet-relationship graph — a stand-in for the on-chain
+ * clustering visualization (Arkham/Nansen-style). Node color encodes the
+ * wallet label; edge direction/weight encodes net flow toward the token.
+ */
+export function WalletGraph({ symbol }: { symbol: string }) {
+  const rng = new Rng(`graph:${symbol}`);
+  const w = 520;
+  const h = 300;
+  const cx = w / 2;
+  const cy = h / 2;
+
+  const kinds: NodeKind[] = ["smart-money", "whale", "vc", "exchange", "team"];
+  const n = 11;
+  const nodes = Array.from({ length: n }, (_, i) => {
+    const kind = i === 0 ? ("token" as NodeKind) : rng.pick(kinds);
+    const angle = (i / n) * Math.PI * 2 + rng.float(-0.2, 0.2);
+    const radius = i === 0 ? 0 : rng.float(90, 135);
+    return {
+      id: i,
+      kind,
+      x: cx + Math.cos(angle) * radius,
+      y: cy + Math.sin(angle) * radius,
+      r: i === 0 ? 20 : rng.float(6, 13),
+      inflow: kind !== "exchange" && rng.bool(0.62),
+    };
+  });
+
+  return (
+    <div>
+      <svg viewBox={`0 0 ${w} ${h}`} className="w-full">
+        {/* edges */}
+        {nodes.slice(1).map((node) => {
+          const color = node.inflow ? "#22e39b" : "#ff5470";
+          return (
+            <line
+              key={`e${node.id}`}
+              x1={cx}
+              y1={cy}
+              x2={node.x}
+              y2={node.y}
+              stroke={color}
+              strokeOpacity={0.22}
+              strokeWidth={node.inflow ? 1.6 : 1}
+            />
+          );
+        })}
+        {/* nodes */}
+        {nodes.map((node) => (
+          <g key={node.id}>
+            <circle
+              cx={node.x}
+              cy={node.y}
+              r={node.r}
+              fill={KIND_COLOR[node.kind]}
+              fillOpacity={node.kind === "token" ? 0.9 : 0.75}
+              stroke={KIND_COLOR[node.kind]}
+              strokeOpacity={0.5}
+              style={{ filter: `drop-shadow(0 0 6px ${KIND_COLOR[node.kind]}55)` }}
+            />
+            {node.kind === "token" && (
+              <text x={node.x} y={node.y + 4} textAnchor="middle" className="fill-base-950 text-[11px] font-bold">
+                {symbol.slice(0, 4)}
+              </text>
+            )}
+          </g>
+        ))}
+      </svg>
+      <div className="mt-2 flex flex-wrap gap-3">
+        {(Object.keys(KIND_COLOR) as NodeKind[]).map((k) => (
+          <span key={k} className="flex items-center gap-1.5 text-[10px] text-white/50">
+            <span className="h-2 w-2 rounded-full" style={{ background: KIND_COLOR[k] }} />
+            {KIND_LABEL[k]}
+          </span>
+        ))}
+        <span className="ml-auto flex items-center gap-3 text-[10px] text-white/40">
+          <span className="flex items-center gap-1"><span className="h-0.5 w-4 bg-signal-green" /> inflow</span>
+          <span className="flex items-center gap-1"><span className="h-0.5 w-4 bg-signal-red" /> outflow</span>
+        </span>
+      </div>
+    </div>
+  );
+}
