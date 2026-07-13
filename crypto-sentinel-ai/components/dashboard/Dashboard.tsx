@@ -16,6 +16,9 @@ import { MarketTicker } from "./MarketTicker";
 import { WatchGrid } from "./WatchGrid";
 import { AlertCard } from "@/components/alerts/AlertCard";
 import { MemeRadar } from "@/components/memes/MemeRadar";
+import { ScrambleText } from "@/components/fx/ScrambleText";
+import { Reveal } from "@/components/fx/Reveal";
+import { HeroGlobe } from "@/components/three/HeroGlobe";
 import { SOURCES } from "@/lib/sources/registry";
 import type { ReactNode } from "react";
 
@@ -67,19 +70,37 @@ export function Dashboard({ initialTick }: { initialTick: number }) {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      {/* Hero — 3D holographic globe behind the command banner */}
+      <div className="relative">
+        <div
+          className="pointer-events-none absolute -right-10 -top-28 hidden h-[440px] w-[620px] md:block"
+          style={{
+            maskImage: "radial-gradient(ellipse at center, black 38%, transparent 72%)",
+            WebkitMaskImage: "radial-gradient(ellipse at center, black 38%, transparent 72%)",
+          }}
+        >
+          <HeroGlobe className="h-full w-full" />
+        </div>
+        <div className="relative flex flex-wrap items-end justify-between gap-4">
         <div>
+          <div className="mb-1 font-mono text-[11px] uppercase tracking-[0.25em] text-signal-green/50">
+            <span className="text-signal-green/30">operator@sentinel</span>:~/command-center$
+          </div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-white">Command Center</h1>
+            <ScrambleText
+              as="h1"
+              text="COMMAND CENTER"
+              className="phosphor text-2xl font-bold tracking-tight sm:text-3xl"
+              duration={1100}
+            />
             <span className="flex items-center gap-1.5 rounded-full border border-signal-green/25 bg-signal-green/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-signal-green">
               <span className={classNames("h-1.5 w-1.5 rounded-full bg-signal-green", live && "animate-pulse")} />
               {live ? "Live" : "Sync"}
             </span>
           </div>
-          <p className="mt-1 text-sm text-white/50">
-            Fusing {SOURCES.length} sources across on-chain, market, DeFi, developer, governance,
-            news &amp; social — <span className="text-signal-green">$0 to run</span>.
+          <p className="mt-1.5 font-mono text-sm text-signal-green/45">
+            <span className="text-signal-green/70">&gt;</span> fusing {SOURCES.length} sources · on-chain · market · defi · dev · gov · news · social —{" "}
+            <span className="phosphor">$0 to run</span>
           </p>
         </div>
         <Link
@@ -88,20 +109,21 @@ export function Dashboard({ initialTick }: { initialTick: number }) {
         >
           Open signal feed <ArrowRight className="h-4 w-4" />
         </Link>
+        </div>
       </div>
 
       <MarketTicker tokens={tokens} />
 
       {/* Stat row */}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <Reveal className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatTile icon={<Radar className="h-4 w-4" />} label="Active Alerts" value={String(alerts.length)} sub={`${green} green · ${yellow} yellow · ${red} red`} tone="green" />
         <StatTile icon={<Zap className="h-4 w-4" />} label="Avg Confidence" value={`${avgConfidence}`} sub="top-8 alert composite" tone="yellow" />
         <StatTile icon={<AlertTriangle className="h-4 w-4" />} label="Risk Alerts" value={String(red)} sub="sell-pressure / volatility" tone="red" />
         <StatTile icon={<Layers className="h-4 w-4" />} label="Tokens Tracked" value={String(tokens.length)} sub="cross-validated in real time" tone="blue" />
-      </div>
+      </Reveal>
 
       {/* Priority alerts + signal stream */}
-      <div className="grid gap-6 xl:grid-cols-[1.6fr_1fr]">
+      <Reveal className="grid gap-6 xl:grid-cols-[1.6fr_1fr]">
         <div className="space-y-3">
           <SectionTitle
             title="Priority Alerts"
@@ -122,7 +144,7 @@ export function Dashboard({ initialTick }: { initialTick: number }) {
         {/* Live signal stream */}
         <div className="space-y-3">
           <SectionTitle title="Live Signal Stream" subtitle="Raw evidence entering the engine" />
-          <GlassCard className="max-h-[560px] overflow-y-auto p-2">
+          <GlassCard className="max-h-[560px] overflow-y-auto p-2" data-lenis-prevent>
             <div className="space-y-1">
               {stream.map((s) => (
                 <div
@@ -158,10 +180,10 @@ export function Dashboard({ initialTick }: { initialTick: number }) {
             </div>
           </GlassCard>
         </div>
-      </div>
+      </Reveal>
 
       {/* Watchlist */}
-      <div className="space-y-3">
+      <Reveal className="space-y-3">
         <SectionTitle
           title="Token Universe"
           subtitle="Highest sentinel scores first"
@@ -172,10 +194,12 @@ export function Dashboard({ initialTick }: { initialTick: number }) {
           }
         />
         <WatchGrid tokens={tokens} />
-      </div>
+      </Reveal>
 
       {/* Meme radar */}
-      <MemeRadar initialTick={initialTick} limit={3} />
+      <Reveal>
+        <MemeRadar initialTick={initialTick} limit={3} />
+      </Reveal>
     </div>
   );
 }

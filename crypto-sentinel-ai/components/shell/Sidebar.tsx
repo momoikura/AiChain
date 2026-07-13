@@ -36,9 +36,14 @@ export function Sidebar() {
           <ShieldCheck className="h-5 w-5 text-base-950" strokeWidth={2.5} />
         </div>
         <div className="leading-tight">
-          <div className="text-sm font-bold tracking-tight text-white">Crypto Sentinel</div>
-          <div className="text-[10px] font-medium uppercase tracking-widest text-signal-green">
-            AI Intelligence
+          <div
+            className="glitch text-sm font-bold uppercase tracking-tight text-white"
+            data-text="SENTINEL"
+          >
+            SENTINEL
+          </div>
+          <div className="text-[10px] font-medium uppercase tracking-[0.25em] text-signal-green phosphor">
+            cyber intel
           </div>
         </div>
       </div>

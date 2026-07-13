@@ -132,7 +132,7 @@ export function TokenDetail({ symbol, initialTick }: { symbol: string; initialTi
 
         <GlassCard className="p-5">
           <SectionTitle title="Raw Signal Log" subtitle="Every observation feeding the engine" />
-          <div className="mt-3 max-h-[320px] space-y-1.5 overflow-y-auto pr-1">
+          <div className="mt-3 max-h-[320px] space-y-1.5 overflow-y-auto pr-1" data-lenis-prevent>
             {signals.map((s) => (
               <div key={s.id} className="rounded-xl border border-white/5 bg-white/[0.02] px-3 py-2">
                 <div className="flex items-center justify-between">

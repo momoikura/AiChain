@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, HTMLAttributes } from "react";
 import { classNames } from "@/lib/format";
 import type { AlertLevel, SourceCategory } from "@/lib/types";
 
@@ -6,11 +6,12 @@ export function GlassCard({
   children,
   className,
   hover = false,
+  ...rest
 }: {
   children: ReactNode;
   className?: string;
   hover?: boolean;
-}) {
+} & HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={classNames(
@@ -18,6 +19,7 @@ export function GlassCard({
         hover && "glass-hover cursor-pointer",
         className
       )}
+      {...rest}
     >
       {children}
     </div>

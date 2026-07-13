@@ -3,6 +3,10 @@ import Link from "next/link";
 import { Sidebar } from "@/components/shell/Sidebar";
 import { Topbar } from "@/components/shell/Topbar";
 import { MobileNav } from "@/components/shell/MobileNav";
+import { CyberBackdrop } from "@/components/fx/CyberBackdrop";
+import { BootSequence } from "@/components/fx/BootSequence";
+import { AIHologram } from "@/components/fx/AIHologram";
+import { Providers } from "@/components/providers/Providers";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -25,10 +29,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <>
+    <Providers>
+      <CyberBackdrop rainOpacity={0.32} />
+      <BootSequence />
+      <AIHologram />
       <Sidebar />
       <MobileNav />
-      <div className="lg:pl-60">
+      <div className="relative z-10 lg:pl-60">
         <Topbar user={user} />
         {!configured && <PreviewBanner />}
         <main className="mx-auto max-w-[1500px] px-4 py-5 pb-24 sm:px-6 sm:py-6 lg:px-8 lg:pb-6">
@@ -44,7 +51,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </p>
         </footer>
       </div>
-    </>
+    </Providers>
   );
 }
 

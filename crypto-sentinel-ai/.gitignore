@@ -4,12 +4,28 @@
 /build
 /.data
 .DS_Store
-*.pem
-.env
-.env*.local
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .vercel
 next-env.d.ts
 tsconfig.tsbuildinfo
+
+# ── Secrets / API keys — NEVER commit these ──────────────────────────────
+# All env files are ignored (real keys live here + in Vercel env vars);
+# only the placeholder template `.env.example` is allowed through.
+.env
+.env.*
+!.env.example
+# Keys, certificates, credentials
+*.pem
+*.key
+*.p12
+*.pfx
+*.cert
+*.crt
+*.secret
+secrets/
+credentials.json
+service-account*.json
+*.serviceaccount.json
