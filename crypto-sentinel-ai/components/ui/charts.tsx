@@ -77,8 +77,17 @@ export function AreaChart({
       {[0.25, 0.5, 0.75].map((f) => (
         <line key={f} x1="0" x2={width} y1={height * f} y2={height * f} stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
       ))}
-      <path d={area} fill="url(#areaFill)" />
-      <path d={line} fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" />
+      <path d={area} fill="url(#areaFill)" className="fade-area" />
+      <path
+        d={line}
+        fill="none"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinejoin="round"
+        pathLength={1}
+        className="draw-line"
+        style={{ filter: `drop-shadow(0 0 4px ${color})` }}
+      />
     </svg>
   );
 }

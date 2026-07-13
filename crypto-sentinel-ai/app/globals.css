@@ -169,6 +169,39 @@ body {
   animation: glitchShift 1.8s infinite linear alternate-reverse;
 }
 
+/* Self-drawing SVG line — path uses pathLength="1" so 1→0 reveals it. */
+@keyframes drawLine {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.draw-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: drawLine 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes fadeInArea {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.fade-area {
+  animation: fadeInArea 1.4s ease-out 0.5s both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .draw-line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .fade-area {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 /* Animated cursor block */
 .caret::after {
   content: "▋";

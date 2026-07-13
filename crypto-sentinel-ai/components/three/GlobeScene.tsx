@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useRef } from "react";
-import { Canvas, useFrame, type ThreeElements } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 
 /**
@@ -133,6 +134,17 @@ export default function GlobeScene({ quality = 1 }: { quality?: number }) {
     >
       <ambientLight intensity={0.4} />
       <Globe quality={quality} />
+      {/* Real volumetric bloom — makes the additive green nodes glow. The page
+          background is black, so the composer's opaque pass is invisible. */}
+      <EffectComposer>
+        <Bloom
+          intensity={1.15}
+          luminanceThreshold={0.08}
+          luminanceSmoothing={0.9}
+          mipmapBlur
+          radius={0.75}
+        />
+      </EffectComposer>
     </Canvas>
   );
 }

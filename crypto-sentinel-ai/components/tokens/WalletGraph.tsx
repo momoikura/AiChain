@@ -3,12 +3,12 @@ import { Rng } from "@/lib/rng";
 type NodeKind = "token" | "smart-money" | "whale" | "vc" | "exchange" | "team";
 
 const KIND_COLOR: Record<NodeKind, string> = {
-  token: "#22e39b",
-  "smart-money": "#4d9dff",
-  whale: "#9b7bff",
-  vc: "#f5c542",
-  exchange: "#ff5470",
-  team: "#38e8e0",
+  token: "#00ff41",
+  "smart-money": "#22d3ff",
+  whale: "#b26bff",
+  vc: "#ffcf3a",
+  exchange: "#ff2957",
+  team: "#00ffe0",
 };
 
 const KIND_LABEL: Record<NodeKind, string> = {
@@ -51,34 +51,54 @@ export function WalletGraph({ symbol }: { symbol: string }) {
   return (
     <div>
       <svg viewBox={`0 0 ${w} ${h}`} className="w-full">
-        {/* edges */}
-        {nodes.slice(1).map((node) => {
-          const color = node.inflow ? "#22e39b" : "#ff5470";
+        {/* edges — self-draw in, then data packets travel the pathways */}
+        {nodes.slice(1).map((node, i) => {
+          const color = node.inflow ? "#00ff41" : "#ff2957";
+          // inflow = value moving toward the token (center); outflow = away.
+          const from = node.inflow ? { x: node.x, y: node.y } : { x: cx, y: cy };
+          const to = node.inflow ? { x: cx, y: cy } : { x: node.x, y: node.y };
           return (
-            <line
-              key={`e${node.id}`}
-              x1={cx}
-              y1={cy}
-              x2={node.x}
-              y2={node.y}
-              stroke={color}
-              strokeOpacity={0.22}
-              strokeWidth={node.inflow ? 1.6 : 1}
-            />
+            <g key={`e${node.id}`}>
+              <line
+                x1={cx}
+                y1={cy}
+                x2={node.x}
+                y2={node.y}
+                stroke={color}
+                strokeOpacity={0.28}
+                strokeWidth={node.inflow ? 1.6 : 1}
+                pathLength={1}
+                className="draw-line"
+                style={{ animationDelay: `${i * 70}ms` }}
+              />
+              <circle r={2.3} fill={color} style={{ filter: `drop-shadow(0 0 4px ${color})` }}>
+                <animateMotion
+                  dur={`${2.4 + (i % 3) * 0.7}s`}
+                  begin={`${0.9 + i * 0.12}s`}
+                  repeatCount="indefinite"
+                  path={`M${from.x.toFixed(1)},${from.y.toFixed(1)} L${to.x.toFixed(1)},${to.y.toFixed(1)}`}
+                />
+              </circle>
+            </g>
           );
         })}
         {/* nodes */}
-        {nodes.map((node) => (
+        {nodes.map((node, i) => (
           <g key={node.id}>
+            {/* sonar pulse ring */}
+            <circle cx={node.x} cy={node.y} r={node.r} fill="none" stroke={KIND_COLOR[node.kind]}>
+              <animate attributeName="r" from={node.r} to={node.r * (node.kind === "token" ? 2.6 : 2)} dur="2.6s" begin={`${i * 0.2}s`} repeatCount="indefinite" />
+              <animate attributeName="stroke-opacity" from="0.6" to="0" dur="2.6s" begin={`${i * 0.2}s`} repeatCount="indefinite" />
+            </circle>
             <circle
               cx={node.x}
               cy={node.y}
               r={node.r}
               fill={KIND_COLOR[node.kind]}
-              fillOpacity={node.kind === "token" ? 0.9 : 0.75}
+              fillOpacity={node.kind === "token" ? 0.9 : 0.7}
               stroke={KIND_COLOR[node.kind]}
-              strokeOpacity={0.5}
-              style={{ filter: `drop-shadow(0 0 6px ${KIND_COLOR[node.kind]}55)` }}
+              strokeOpacity={0.6}
+              style={{ filter: `drop-shadow(0 0 ${node.kind === "token" ? 12 : 6}px ${KIND_COLOR[node.kind]})` }}
             />
             {node.kind === "token" && (
               <text x={node.x} y={node.y + 4} textAnchor="middle" className="fill-base-950 text-[11px] font-bold">
