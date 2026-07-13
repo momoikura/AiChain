@@ -54,6 +54,58 @@ function buildArcs(surface: Float32Array, count: number): THREE.BufferGeometry[]
   return geos;
 }
 
+/** Slowly rotating HUD targeting ring around the planet. */
+function HudRing() {
+  const ref = useRef<THREE.Mesh>(null);
+  useFrame((_, d) => {
+    if (ref.current) ref.current.rotation.z += d * 0.35;
+  });
+  return (
+    <mesh ref={ref} rotation={[Math.PI / 2.3, 0, 0]}>
+      <ringGeometry args={[1.46, 1.49, 96]} />
+      <meshBasicMaterial
+        color={CYAN}
+        transparent
+        opacity={0.3}
+        side={THREE.DoubleSide}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
+    </mesh>
+  );
+}
+
+/** Floating wireframe data cubes orbiting the globe. */
+function DataCubes({ count = 7 }: { count?: number }) {
+  const g = useRef<THREE.Group>(null);
+  const cubes = useMemo(
+    () =>
+      Array.from({ length: count }, (_, i) => {
+        const a = (i / count) * Math.PI * 2;
+        const r = 1.4 + (i % 2) * 0.16;
+        return {
+          pos: [Math.cos(a) * r, (Math.random() - 0.5) * 0.9, Math.sin(a) * r] as [number, number, number],
+          size: 0.045 + Math.random() * 0.035,
+          color: i % 2 ? CYAN : GREEN,
+        };
+      }),
+    [count]
+  );
+  useFrame((_, d) => {
+    if (g.current) g.current.rotation.y += d * 0.28;
+  });
+  return (
+    <group ref={g}>
+      {cubes.map((c, i) => (
+        <mesh key={i} position={c.pos} rotation={[i, i * 0.5, 0]}>
+          <boxGeometry args={[c.size, c.size, c.size]} />
+          <meshBasicMaterial color={c.color} wireframe transparent opacity={0.85} blending={THREE.AdditiveBlending} depthWrite={false} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 function Globe({ quality }: { quality: number }) {
   const group = useRef<THREE.Group>(null);
   const surfaceCount = Math.floor(1600 * quality);
@@ -120,6 +172,10 @@ function Globe({ quality }: { quality: number }) {
         </bufferGeometry>
         <pointsMaterial size={0.014} color={GREEN} transparent opacity={0.4} sizeAttenuation depthWrite={false} />
       </points>
+
+      {/* HUD ring + orbiting data cubes */}
+      <HudRing />
+      <DataCubes />
     </group>
   );
 }

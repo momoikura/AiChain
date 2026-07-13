@@ -3,14 +3,17 @@
 import { useEffect } from "react";
 import Lenis from "lenis";
 import { MotionConfig } from "framer-motion";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 /**
- * Client providers: Lenis momentum smooth-scroll (desktop wheel only — native
- * on touch) + Framer's reduced-motion config so all `motion` components respect
- * the user's OS setting. Inner scroll panels opt out with `data-lenis-prevent`.
+ * Client providers: Lenis momentum scroll driven by the GSAP ticker, with
+ * ScrollTrigger synced to Lenis (the canonical integration). Also sets Framer's
+ * reduced-motion config. Inner scroll panels opt out via `data-lenis-prevent`.
  */
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) return;
 
@@ -22,16 +25,17 @@ export function Providers({ children }: { children: React.ReactNode }) {
       touchMultiplier: 1.4,
     });
 
-    let raf = 0;
-    const loop = (time: number) => {
-      lenis.raf(time);
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
+    // Keep ScrollTrigger in sync with Lenis' virtual scroll.
+    lenis.on("scroll", ScrollTrigger.update);
+    const ticker = (time: number) => lenis.raf(time * 1000);
+    gsap.ticker.add(ticker);
+    gsap.ticker.lagSmoothing(0);
 
     return () => {
-      cancelAnimationFrame(raf);
+      lenis.off("scroll", ScrollTrigger.update);
+      gsap.ticker.remove(ticker);
       lenis.destroy();
+      ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);
 

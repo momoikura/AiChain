@@ -19,6 +19,7 @@ import { MemeRadar } from "@/components/memes/MemeRadar";
 import { ScrambleText } from "@/components/fx/ScrambleText";
 import { Reveal } from "@/components/fx/Reveal";
 import { CountUp } from "@/components/fx/CountUp";
+import { SectorScroll } from "@/components/fx/SectorScroll";
 import { HeroGlobe } from "@/components/three/HeroGlobe";
 import { SOURCES } from "@/lib/sources/registry";
 import type { ReactNode } from "react";
@@ -201,6 +202,9 @@ export function Dashboard({ initialTick }: { initialTick: number }) {
       <Reveal>
         <MemeRadar initialTick={initialTick} limit={3} />
       </Reveal>
+
+      {/* GSAP horizontal-pinned intelligence sectors */}
+      <SectorScroll />
     </div>
   );
 }
