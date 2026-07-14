@@ -122,6 +122,22 @@ export const IcTerminal = (p: P) => (
   </Svg>
 );
 
+/** Threat — hazard reticle. */
+export const IcThreat = (p: P) => (
+  <Svg {...p}>
+    <path d="M12 3.5l8.5 15H3.5z" />
+    <path d="M12 9v4" />
+    <circle cx="12" cy="15.6" r="0.6" fill="currentColor" stroke="none" />
+  </Svg>
+);
+
+/** Pulse — signal waveform. */
+export const IcPulse = (p: P) => (
+  <Svg {...p}>
+    <path d="M3 12h4l2-6 3 12 2-8 2 2h5" />
+  </Svg>
+);
+
 /** Search — magnifier + reticle. */
 export const IcSearch = (p: P) => (
   <Svg {...p}>

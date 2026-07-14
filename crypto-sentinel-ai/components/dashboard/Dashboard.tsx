@@ -1,13 +1,7 @@
 "use client";
 
-import {
-  Radar,
-  TrendingUp,
-  AlertTriangle,
-  Layers,
-  Zap,
-  ArrowRight,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { IcSignals, IcPulse, IcThreat, IcSources } from "@/components/brand/icons";
 import Link from "next/link";
 import { useLiveSnapshot } from "@/lib/hooks/useLive";
 import { fmtCompact, timeAgo, classNames } from "@/lib/format";
@@ -118,10 +112,10 @@ export function Dashboard({ initialTick }: { initialTick: number }) {
 
       {/* Stat row */}
       <Reveal className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatTile icon={<Radar className="h-4 w-4" />} label="Active Alerts" value={<CountUp value={alerts.length} />} sub={`${green} green · ${yellow} yellow · ${red} red`} tone="green" />
-        <StatTile icon={<Zap className="h-4 w-4" />} label="Avg Confidence" value={<CountUp value={avgConfidence} />} sub="top-8 alert composite" tone="yellow" />
-        <StatTile icon={<AlertTriangle className="h-4 w-4" />} label="Risk Alerts" value={<CountUp value={red} />} sub="sell-pressure / volatility" tone="red" />
-        <StatTile icon={<Layers className="h-4 w-4" />} label="Tokens Tracked" value={<CountUp value={tokens.length} />} sub="cross-validated in real time" tone="blue" />
+        <StatTile icon={<IcSignals size={17} />} label="Active Alerts" value={<CountUp value={alerts.length} />} sub={`${green} green · ${yellow} yellow · ${red} red`} tone="green" />
+        <StatTile icon={<IcPulse size={17} />} label="Avg Confidence" value={<CountUp value={avgConfidence} />} sub="top-8 alert composite" tone="yellow" />
+        <StatTile icon={<IcThreat size={17} />} label="Risk Alerts" value={<CountUp value={red} />} sub="sell-pressure / volatility" tone="red" />
+        <StatTile icon={<IcSources size={17} />} label="Tokens Tracked" value={<CountUp value={tokens.length} />} sub="cross-validated in real time" tone="blue" />
       </Reveal>
 
       {/* Priority alerts + signal stream */}

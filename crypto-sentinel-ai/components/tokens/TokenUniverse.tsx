@@ -54,7 +54,8 @@ export function TokenUniverse({ initialTick }: { initialTick: number }) {
         ))}
       </div>
 
-      <div className="glass overflow-hidden rounded-2xl">
+      {/* Desktop: dense table */}
+      <div className="hidden glass overflow-hidden rounded-2xl lg:block">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[860px] text-sm">
             <thead>
@@ -134,6 +135,62 @@ export function TokenUniverse({ initialTick }: { initialTick: number }) {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Mobile: stacked cards (no horizontal scroll) */}
+      <div className="space-y-2.5 lg:hidden">
+        {rows.map((t) => (
+          <Link key={t.symbol} href={`/tokens/${t.symbol}`}>
+            <div className="glass glass-hover rounded-2xl p-3.5">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.06] text-[11px] font-bold text-white/80">
+                    {t.symbol.slice(0, 3)}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5 font-semibold text-white">
+                      {t.symbol}
+                      {t.isMeme && <MemeBadge />}
+                    </div>
+                    <div className="text-[11px] text-white/40">{t.name}</div>
+                  </div>
+                </div>
+                <LevelBadge level={t.topLevel} />
+              </div>
+
+              <div className="mt-3 flex items-end justify-between">
+                <div>
+                  <div className="tabular text-base font-semibold text-white">{fmtPrice(t.price)}</div>
+                  <div className="mt-0.5 flex gap-2 text-xs">
+                    <span className={classNames("tabular", t.change24h >= 0 ? "text-signal-green" : "text-signal-red")}>
+                      {fmtPct(t.change24h)} · 24h
+                    </span>
+                    <span className={classNames("tabular", t.change7d >= 0 ? "text-signal-green" : "text-signal-red")}>
+                      {fmtPct(t.change7d)} · 7d
+                    </span>
+                  </div>
+                </div>
+                <Sparkline data={t.spark} width={92} height={30} />
+              </div>
+
+              <div className="mt-3 flex items-center justify-between border-t border-white/8 pt-2.5 text-[11px] text-white/40">
+                <span>MCap {fmtUsd(t.marketCap, { compact: true })}</span>
+                <span>Vol {fmtUsd(t.volume24h, { compact: true })}</span>
+                <span className="flex items-center gap-1">
+                  Sentinel
+                  <span
+                    className={classNames(
+                      "tabular font-bold",
+                      t.sentinelScore >= 84 ? "text-signal-yellow" : t.topLevel === "red" ? "text-signal-red" : "text-signal-green"
+                    )}
+                  >
+                    {t.sentinelScore}
+                  </span>
+                </span>
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   );

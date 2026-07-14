@@ -101,7 +101,7 @@ export function PortfolioView({ tick }: { tick: number }) {
       {/* Decision log */}
       <div className="space-y-3">
         <SectionTitle title="AI Decision Log" subtitle="Executed, rejected & missed — with the reasoning behind each" />
-        <GlassCard className="overflow-hidden">
+        <GlassCard className="hidden overflow-hidden lg:block">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[820px] text-sm">
               <thead>
@@ -142,6 +142,37 @@ export function PortfolioView({ tick }: { tick: number }) {
             </table>
           </div>
         </GlassCard>
+
+        {/* Mobile: stacked decision cards (no horizontal scroll) */}
+        <div className="space-y-2.5 lg:hidden">
+          {trades.map((t) => {
+            const meta = STATUS_META[t.status];
+            return (
+              <div key={t.id} className="glass rounded-2xl p-3.5">
+                <div className="flex items-center justify-between">
+                  <span className={classNames("inline-flex items-center gap-1.5 text-xs font-semibold", meta.tone)}>
+                    {meta.icon} {meta.label}
+                  </span>
+                  <span className="font-mono text-[11px] text-white/40">{timeAgo(t.timestamp, now)}</span>
+                </div>
+                <div className="mt-2 flex items-center gap-2">
+                  <span className="font-semibold text-white/85">{t.symbol}</span>
+                  <Chip tone={t.side === "buy" ? "green" : "red"}>{t.side.toUpperCase()}</Chip>
+                  <span
+                    className={classNames(
+                      "tabular ml-auto text-sm font-semibold",
+                      t.pnl == null ? "text-white/30" : t.pnl >= 0 ? "text-signal-green" : "text-signal-red"
+                    )}
+                  >
+                    {t.pnl == null ? "—" : `${t.pnl >= 0 ? "+" : ""}${fmtUsd(t.pnl, { compact: true })}`}
+                  </span>
+                </div>
+                <div className="mt-1.5 text-[12px] font-medium text-white/60">{t.ruleName}</div>
+                <div className="mt-0.5 text-[12px] leading-snug text-white/45">{t.reason}</div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
