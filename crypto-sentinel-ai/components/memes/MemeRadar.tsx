@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Sparkles, Flame, ShieldAlert, TrendingUp } from "lucide-react";
+import { IcMeme, IcFlame, IcThreat, IcTrend } from "@/components/brand/icons";
 import { useLiveSnapshot } from "@/lib/hooks/useLive";
 import { fmtPct, fmtPrice, classNames } from "@/lib/format";
 import { LevelBadge, GlassCard, SectionTitle } from "@/components/ui/primitives";
@@ -42,7 +42,7 @@ export function MemeRadar({ initialTick, limit }: { initialTick: number; limit?:
         <>
           <div>
             <div className="flex items-center gap-2">
-              <Sparkles className="h-6 w-6 text-signal-violet" />
+              <span className="text-signal-violet"><IcMeme size={22} /></span>
               <h1 className="text-2xl font-bold tracking-tight text-white">Meme Radar</h1>
             </div>
             <p className="mt-1 text-sm text-white/50">
@@ -56,21 +56,21 @@ export function MemeRadar({ initialTick, limit }: { initialTick: number; limit?:
           <div className="grid gap-3 sm:grid-cols-3">
             <GlassCard className="p-4">
               <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-white/40">
-                <Flame className="h-4 w-4 text-signal-yellow" /> Hottest
+                <span className="text-signal-yellow"><IcFlame size={15} /></span> Hottest
               </div>
               <div className="mt-1.5 text-xl font-bold text-white">{hottest?.symbol ?? "—"}</div>
               <div className="text-[11px] text-white/40">sentinel {hottest?.sentinelScore ?? 0}</div>
             </GlassCard>
             <GlassCard className="p-4">
               <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-white/40">
-                <TrendingUp className="h-4 w-4 text-signal-green" /> Meme Alerts
+                <span className="text-signal-green"><IcTrend size={15} /></span> Meme Alerts
               </div>
               <div className="mt-1.5 text-xl font-bold text-white">{memeAlerts}</div>
               <div className="text-[11px] text-white/40">multi-source corroborated</div>
             </GlassCard>
             <GlassCard className="p-4">
               <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-white/40">
-                <ShieldAlert className="h-4 w-4 text-signal-red" /> Watch Risk
+                <span className="text-signal-red"><IcThreat size={15} /></span> Watch Risk
               </div>
               <div className="mt-1.5 text-xl font-bold text-white">{riskiest?.symbol ?? "—"}</div>
               <div className="text-[11px] text-white/40">concentration / sniper risk</div>

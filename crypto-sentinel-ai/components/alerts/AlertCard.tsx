@@ -2,7 +2,13 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ChevronDown, Check, X, ArrowUpRight, Clock } from "lucide-react";
+import {
+  IcChevron,
+  IcCheck,
+  IcClose,
+  IcArrowUpRight,
+  IcClock,
+} from "@/components/brand/icons";
 import type { Alert } from "@/lib/types";
 import { classNames, timeAgo } from "@/lib/format";
 import { CategoryTag, Chip, LevelBadge } from "@/components/ui/primitives";
@@ -41,7 +47,7 @@ export function AlertCard({ alert, now }: { alert: Alert; now: number }) {
           <div className="flex flex-wrap items-center gap-2">
             <LevelBadge level={alert.level} label={LEVEL_LABEL[alert.level]} />
             <span className="text-[11px] text-white/40">
-              <Clock className="mr-1 inline h-3 w-3" />
+              <IcClock className="mr-1 inline h-3 w-3" />
               {timeAgo(alert.createdAt, now)}
             </span>
             <span className="ml-auto flex items-center gap-1 text-[11px] text-white/40">
@@ -56,7 +62,7 @@ export function AlertCard({ alert, now }: { alert: Alert; now: number }) {
             <h3 className="text-base font-semibold text-white group-hover:text-signal-green">
               {alert.title}
             </h3>
-            <ArrowUpRight className="h-4 w-4 text-white/30 group-hover:text-signal-green" />
+            <IcArrowUpRight className="h-4 w-4 text-white/30 group-hover:text-signal-green" />
           </Link>
           <p className="mt-1 text-sm leading-relaxed text-white/60">{alert.summary}</p>
 
@@ -67,7 +73,7 @@ export function AlertCard({ alert, now }: { alert: Alert; now: number }) {
                 key={i}
                 className="inline-flex items-center gap-1 rounded-md border border-signal-green/20 bg-signal-green/5 px-2 py-0.5 text-[11px] text-signal-green/90"
               >
-                <Check className="h-3 w-3" />
+                <IcCheck className="h-3 w-3" />
                 {f.label}
               </span>
             ))}
@@ -76,7 +82,7 @@ export function AlertCard({ alert, now }: { alert: Alert; now: number }) {
                 key={`c${i}`}
                 className="inline-flex items-center gap-1 rounded-md border border-signal-red/20 bg-signal-red/5 px-2 py-0.5 text-[11px] text-signal-red/90"
               >
-                <X className="h-3 w-3" />
+                <IcClose className="h-3 w-3" />
                 {f.label}
               </span>
             ))}
@@ -86,7 +92,7 @@ export function AlertCard({ alert, now }: { alert: Alert; now: number }) {
             onClick={() => setOpen((o) => !o)}
             className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-white/50 transition hover:text-white"
           >
-            <ChevronDown className={classNames("h-4 w-4 transition", open && "rotate-180")} />
+            <IcChevron className={classNames("h-4 w-4 transition", open && "rotate-180")} />
             {open ? "Hide reasoning" : "Explain this alert"}
           </button>
 
@@ -116,7 +122,7 @@ export function AlertCard({ alert, now }: { alert: Alert; now: number }) {
                   <ul className="space-y-1.5">
                     {b.supporting.slice(0, 5).map((f, i) => (
                       <li key={i} className="flex items-start gap-2 text-[12px] text-white/70">
-                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-signal-green" />
+                        <IcCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-signal-green" />
                         <span className="flex-1">
                           <span className="text-white/85">{f.label}</span> — {f.detail}
                         </span>
@@ -134,7 +140,7 @@ export function AlertCard({ alert, now }: { alert: Alert; now: number }) {
                     <ul className="space-y-1.5">
                       {b.contradicting.slice(0, 4).map((f, i) => (
                         <li key={i} className="flex items-start gap-2 text-[12px] text-white/70">
-                          <X className="mt-0.5 h-3.5 w-3.5 shrink-0 text-signal-red" />
+                          <IcClose className="mt-0.5 h-3.5 w-3.5 shrink-0 text-signal-red" />
                           <span className="flex-1">
                             <span className="text-white/85">{f.label}</span> — {f.detail}
                           </span>

@@ -145,3 +145,47 @@ export const IcSearch = (p: P) => (
     <path d="M11 8v6M8 11h6M20 20l-4.5-4.5" />
   </Svg>
 );
+
+/** Functional glyphs — same HUD stroke language. */
+export const IcCheck = (p: P) => (
+  <Svg {...p}><path d="M4 12.5l5 5L20 6.5" /></Svg>
+);
+export const IcClose = (p: P) => (
+  <Svg {...p}><path d="M6 6l12 12M18 6L6 18" /></Svg>
+);
+export const IcChevron = (p: P) => (
+  <Svg {...p}><path d="M6 9l6 6 6-6" /></Svg>
+);
+export const IcArrowUpRight = (p: P) => (
+  <Svg {...p}><path d="M7 17L17 7M8 7h9v9" /></Svg>
+);
+export const IcClock = (p: P) => (
+  <Svg {...p}><circle cx="12" cy="12" r="8" /><path d="M12 7.5V12l3 2" /></Svg>
+);
+export const IcFlame = (p: P) => (
+  <Svg {...p}><path d="M12 3c1 3-2 4-2 7a2 2 0 104 0c0-1 .5-1.5 1-2 1 2 2 3 2 5a5 5 0 11-10 0c0-4 3-6 5-10z" /></Svg>
+);
+export const IcTrend = (p: P) => (
+  <Svg {...p}><path d="M3 16l5-5 3 3 6-7M14 7h4v4" /></Svg>
+);
+export const IcShield = (p: P) => (
+  <Svg {...p}><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" /><path d="M9 12l2 2 4-4" /></Svg>
+);
+export const IcLock = (p: P) => (
+  <Svg {...p}><rect x="5.5" y="10.5" width="13" height="9" rx="2" /><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" /></Svg>
+);
+export const IcBolt = (p: P) => (
+  <Svg {...p}><path d="M13 3L5 13h5l-1 8 8-11h-5z" /></Svg>
+);
+export const IcKey = (p: P) => (
+  <Svg {...p}><circle cx="8" cy="8" r="4" /><path d="M11 11l8 8M16 16l2-2M18.5 18.5l1.5-1.5" /></Svg>
+);
+export const IcBiometric = (p: P) => (
+  <Svg {...p}><path d="M7 11a5 5 0 0110 0v1M9 12v2a3 3 0 006 0M12 12v3M6 8a8 8 0 0112 0" /></Svg>
+);
+export const IcBell = (p: P) => (
+  <Svg {...p}><path d="M6 10a6 6 0 0112 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 004 0" /></Svg>
+);
+export const IcLogout = (p: P) => (
+  <Svg {...p}><path d="M14 6V5a2 2 0 00-2-2H6a2 2 0 00-2 2v14a2 2 0 002 2h6a2 2 0 002-2v-1M9 12h11M17 9l3 3-3 3" /></Svg>
+);

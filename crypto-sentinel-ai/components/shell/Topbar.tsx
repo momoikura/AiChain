@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Bell, Activity, LogOut } from "lucide-react";
+
 import { Logo } from "@/components/brand/Logo";
-import { IcSearch } from "@/components/brand/icons";
+import { IcSearch, IcBell, IcLogout, IcPulse } from "@/components/brand/icons";
 
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/);
@@ -67,7 +67,7 @@ export function Topbar({ user }: { user?: { name: string; email: string } }) {
         </button>
 
         <div className="hidden items-center gap-2 rounded-lg border border-white/8 bg-white/[0.03] px-3 py-1.5 text-xs sm:flex">
-          <Activity className="h-3.5 w-3.5 text-signal-green" />
+          <span className="text-signal-green"><IcPulse size={14} /></span>
           <span className="tabular text-white/70">{clock || "—"}</span>
         </div>
 
@@ -75,7 +75,7 @@ export function Topbar({ user }: { user?: { name: string; email: string } }) {
           aria-label="Notifications"
           className="relative rounded-lg border border-white/8 bg-white/[0.03] p-2 text-white/60 transition hover:text-white"
         >
-          <Bell className="h-4 w-4" />
+          <IcBell size={16} />
           <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-signal-red shadow-glowRed" />
         </button>
 
@@ -99,7 +99,7 @@ export function Topbar({ user }: { user?: { name: string; email: string } }) {
             aria-label="Sign out"
             className="rounded-md p-1.5 text-white/40 transition hover:bg-white/5 hover:text-signal-red disabled:opacity-50"
           >
-            <LogOut className="h-4 w-4" />
+            <IcLogout size={16} />
           </button>
         </div>
       </div>

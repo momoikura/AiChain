@@ -14,10 +14,10 @@ const TRUST = ["No single-source alerts", "Runs at $0", "Not financial advice"];
 
 export function AuthShell({ mode }: { mode: "login" | "signup" }) {
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-base-950 text-white">
+    <div className="relative min-h-dvh w-full overflow-hidden bg-base-950 text-white">
       <AuthBackground />
 
-      <div className="relative z-10 mx-auto grid min-h-screen max-w-6xl grid-cols-1 items-center gap-8 px-5 py-10 lg:grid-cols-2 lg:gap-16 lg:px-10">
+      <div className="relative z-10 mx-auto grid min-h-dvh max-w-6xl grid-cols-1 items-center gap-8 px-5 py-10 lg:grid-cols-2 lg:gap-16 lg:px-10">
         {/* Brand / marketing panel */}
         <div className="hidden animate-fadeUp flex-col lg:flex">
           <div className="flex items-center gap-3">

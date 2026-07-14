@@ -2,16 +2,15 @@
 
 import { useMemo } from "react";
 import {
-  ShieldCheck,
-  Fingerprint,
-  Cpu,
-  Radar,
-  Activity,
-  Lock,
-  Zap,
-  KeyRound,
-  ScanLine,
-} from "lucide-react";
+  IcShield,
+  IcBiometric,
+  IcAutomation,
+  IcSignals,
+  IcPulse,
+  IcLock,
+  IcBolt,
+  IcKey,
+} from "@/components/brand/icons";
 import { Rng, hashSeed } from "@/lib/rng";
 import { classNames, timeAgo } from "@/lib/format";
 import { GlassCard, SectionTitle, Chip } from "@/components/ui/primitives";
@@ -138,12 +137,12 @@ export function ProfileConsole({ name, email }: { name: string; email: string })
 
       {/* Vitals */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        <Vital icon={<ShieldCheck className="h-4 w-4" />} label="Integrity" value={<><CountUp value={d.integrity} />%</>} />
-        <Vital icon={<Radar className="h-4 w-4" />} label="Threat Det." value="ACTIVE" />
-        <Vital icon={<Fingerprint className="h-4 w-4" />} label="Biometric" value="VERIFIED" tone="text-signal-blue" />
-        <Vital icon={<Lock className="h-4 w-4" />} label="2FA" value="ENABLED" tone="text-signal-blue" />
-        <Vital icon={<Cpu className="h-4 w-4" />} label="AI Queries" value={<CountUp value={d.aiQueries} />} tone="text-signal-yellow" />
-        <Vital icon={<ScanLine className="h-4 w-4" />} label="Active" value={<><CountUp value={d.memberDays} />d</>} tone="text-signal-violet" />
+        <Vital icon={<IcShield className="h-4 w-4" />} label="Integrity" value={<><CountUp value={d.integrity} />%</>} />
+        <Vital icon={<IcSignals className="h-4 w-4" />} label="Threat Det." value="ACTIVE" />
+        <Vital icon={<IcBiometric className="h-4 w-4" />} label="Biometric" value="VERIFIED" tone="text-signal-blue" />
+        <Vital icon={<IcLock className="h-4 w-4" />} label="2FA" value="ENABLED" tone="text-signal-blue" />
+        <Vital icon={<IcAutomation className="h-4 w-4" />} label="AI Queries" value={<CountUp value={d.aiQueries} />} tone="text-signal-yellow" />
+        <Vital icon={<IcPulse className="h-4 w-4" />} label="Active" value={<><CountUp value={d.memberDays} />d</>} tone="text-signal-violet" />
       </div>
 
       {/* Mission stats + Access */}
@@ -166,7 +165,7 @@ export function ProfileConsole({ name, email }: { name: string; email: string })
               </div>
             ))}
             <div className="col-span-2 flex items-center gap-3 rounded-xl border border-signal-green/15 bg-signal-green/5 p-3 sm:col-span-1">
-              <Zap className="h-5 w-5 text-signal-green" />
+              <IcBolt className="h-5 w-5 text-signal-green" />
               <div className="text-[11px] leading-snug text-white/60">Engine attribution nominal · no anomalies</div>
             </div>
           </div>
@@ -178,7 +177,7 @@ export function ProfileConsole({ name, email }: { name: string; email: string })
             {d.exchanges.map((e) => (
               <div key={e.name} className="flex items-center justify-between rounded-lg border border-white/8 bg-white/[0.02] px-3 py-2">
                 <span className="flex items-center gap-2 text-sm text-white/80">
-                  <KeyRound className="h-3.5 w-3.5 text-white/40" /> {e.name}
+                  <IcKey className="h-3.5 w-3.5 text-white/40" /> {e.name}
                 </span>
                 <span className={classNames("text-[10px] font-bold uppercase tracking-wider", e.ok ? "text-signal-green" : "text-white/35")}>
                   {e.ok ? "● connected" : "○ not linked"}
@@ -188,7 +187,7 @@ export function ProfileConsole({ name, email }: { name: string; email: string })
             <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] text-white/45">
               {["API status", "Session", "Wallet sec.", "Audit log"].map((f) => (
                 <div key={f} className="flex items-center gap-1.5 rounded-lg border border-white/8 bg-white/[0.02] px-2.5 py-2">
-                  <Lock className="h-3 w-3 text-signal-green" /> {f}
+                  <IcLock className="h-3 w-3 text-signal-green" /> {f}
                 </div>
               ))}
             </div>
@@ -208,7 +207,7 @@ export function ProfileConsole({ name, email }: { name: string; email: string })
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <Activity className="h-3.5 w-3.5 shrink-0 text-signal-green/60" />
+                  <IcPulse className="h-3.5 w-3.5 shrink-0 text-signal-green/60" />
                   <span className="truncate text-[13px] text-white/75">{row.t}</span>
                 </div>
                 <span className="font-mono text-[11px] text-white/35">{timeAgo(row.ts, d.now)}</span>
