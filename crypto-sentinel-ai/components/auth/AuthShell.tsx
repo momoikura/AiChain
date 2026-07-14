@@ -1,5 +1,6 @@
 import { Suspense } from "react";
-import { ShieldCheck, Radar, Sparkles, Lock, CheckCircle2 } from "lucide-react";
+import { Radar, Sparkles, Lock, CheckCircle2 } from "lucide-react";
+import { Logo } from "@/components/brand/Logo";
 import { AuthBackground } from "./AuthBackground";
 import { AuthForm } from "./AuthForm";
 
@@ -20,8 +21,8 @@ export function AuthShell({ mode }: { mode: "login" | "signup" }) {
         {/* Brand / marketing panel */}
         <div className="hidden animate-fadeUp flex-col lg:flex">
           <div className="flex items-center gap-3">
-            <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-signal-green to-accent-cyan shadow-glow animate-floatY">
-              <ShieldCheck className="h-6 w-6 text-base-950" strokeWidth={2.5} />
+            <div className="animate-floatY">
+              <Logo size={44} />
             </div>
             <div>
               <div className="text-lg font-bold tracking-tight">Crypto Sentinel AI</div>
@@ -72,9 +73,7 @@ export function AuthShell({ mode }: { mode: "login" | "signup" }) {
         <div className="mx-auto w-full max-w-md animate-fadeUp" style={{ animationDelay: "80ms" }}>
           {/* Mobile brand */}
           <div className="mb-6 flex items-center gap-2.5 lg:hidden">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-signal-green to-accent-cyan shadow-glow">
-              <ShieldCheck className="h-5 w-5 text-base-950" strokeWidth={2.5} />
-            </div>
+            <Logo size={40} />
             <div>
               <div className="text-base font-bold tracking-tight">Crypto Sentinel AI</div>
               <div className="text-[10px] font-semibold uppercase tracking-widest text-signal-green">

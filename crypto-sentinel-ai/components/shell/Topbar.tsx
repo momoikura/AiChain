@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, Bell, Activity, ShieldCheck, LogOut } from "lucide-react";
+import { Bell, Activity, LogOut } from "lucide-react";
+import { Logo } from "@/components/brand/Logo";
+import { IcSearch } from "@/components/brand/icons";
 
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/);
@@ -27,56 +30,74 @@ export function Topbar({ user }: { user?: { name: string; email: string } }) {
 
   useEffect(() => {
     const tick = () =>
-      setClock(
-        new Date().toLocaleTimeString("en-US", {
-          hour12: false,
-          timeZone: "UTC",
-        }) + " UTC"
-      );
+      setClock(new Date().toLocaleTimeString("en-US", { hour12: false, timeZone: "UTC" }) + " UTC");
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, []);
 
+  const openPalette = () => window.dispatchEvent(new Event("sentinel:command"));
+
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center gap-4 border-b border-white/8 bg-base-950/60 px-5 backdrop-blur-xl">
+    <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-white/8 bg-base-950/60 px-4 backdrop-blur-xl sm:gap-4 sm:px-5">
       {/* Mobile brand */}
-      <div className="flex items-center gap-2 lg:hidden">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-signal-green to-accent-cyan">
-          <ShieldCheck className="h-4 w-4 text-base-950" strokeWidth={2.5} />
-        </div>
-        <span className="text-sm font-bold">Sentinel</span>
-      </div>
+      <Link href="/" className="flex items-center gap-2 lg:hidden" aria-label="Sentinel home">
+        <Logo size={30} />
+        <span className="text-sm font-bold tracking-tight">SENTINEL</span>
+      </Link>
 
-      <div className="relative hidden max-w-md flex-1 md:block">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30" />
-        <input
-          placeholder="Search tokens, wallets, signals…"
-          className="w-full rounded-xl border border-white/8 bg-white/[0.03] py-2 pl-9 pr-4 text-sm text-white/90 placeholder:text-white/30 focus:border-signal-green/40 focus:outline-none focus:ring-1 focus:ring-signal-green/30"
-        />
-      </div>
+      {/* Search → command palette (both desktop input and mobile icon) */}
+      <button
+        onClick={openPalette}
+        className="group ml-auto hidden max-w-md flex-1 items-center gap-2 rounded-xl border border-white/8 bg-white/[0.03] py-2 pl-3 pr-2 text-left text-sm text-white/40 transition hover:border-signal-green/40 md:ml-0 md:flex"
+        aria-label="Open command palette"
+      >
+        <IcSearch size={16} />
+        <span className="flex-1 truncate">Search tokens, screens, actions…</span>
+        <kbd className="rounded border border-white/15 px-1.5 py-0.5 font-mono text-[10px] text-white/40">⌘K</kbd>
+      </button>
 
-      <div className="ml-auto flex items-center gap-3">
+      <div className="ml-auto flex items-center gap-2 sm:gap-3 md:ml-0">
+        <button
+          onClick={openPalette}
+          aria-label="Search"
+          className="rounded-lg border border-white/8 bg-white/[0.03] p-2 text-white/60 transition hover:text-signal-green md:hidden"
+        >
+          <IcSearch size={18} />
+        </button>
+
         <div className="hidden items-center gap-2 rounded-lg border border-white/8 bg-white/[0.03] px-3 py-1.5 text-xs sm:flex">
           <Activity className="h-3.5 w-3.5 text-signal-green" />
           <span className="tabular text-white/70">{clock || "—"}</span>
         </div>
-        <button className="relative rounded-lg border border-white/8 bg-white/[0.03] p-2 text-white/60 transition hover:text-white">
+
+        <button
+          aria-label="Notifications"
+          className="relative rounded-lg border border-white/8 bg-white/[0.03] p-2 text-white/60 transition hover:text-white"
+        >
           <Bell className="h-4 w-4" />
           <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-signal-red shadow-glowRed" />
         </button>
-        <div className="flex items-center gap-2 rounded-lg border border-white/8 bg-white/[0.03] py-1.5 pl-2 pr-1.5">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-signal-violet to-signal-blue text-[10px] font-bold">
-            {initials(user?.name ?? "User")}
-          </div>
-          <span className="hidden max-w-[120px] truncate text-xs font-medium text-white/70 sm:block">
-            {user?.name ?? "Account"}
-          </span>
+
+        <div className="flex items-center gap-1.5 rounded-lg border border-white/8 bg-white/[0.03] py-1 pl-1.5 pr-1">
+          <Link
+            href="/profile"
+            className="flex items-center gap-2"
+            aria-label="Operator console"
+          >
+            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-signal-violet to-signal-blue text-[10px] font-bold">
+              {initials(user?.name ?? "User")}
+            </div>
+            <span className="hidden max-w-[120px] truncate text-xs font-medium text-white/70 sm:block">
+              {user?.name ?? "Account"}
+            </span>
+          </Link>
           <button
             onClick={logout}
             disabled={loggingOut}
             title="Sign out"
-            className="rounded-md p-1 text-white/40 transition hover:bg-white/5 hover:text-signal-red disabled:opacity-50"
+            aria-label="Sign out"
+            className="rounded-md p-1.5 text-white/40 transition hover:bg-white/5 hover:text-signal-red disabled:opacity-50"
           >
             <LogOut className="h-4 w-4" />
           </button>

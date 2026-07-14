@@ -2,75 +2,70 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Radar,
-  Coins,
-  Sparkles,
-  Waypoints,
-  Wallet,
-  Bot,
-  Database,
-  Settings,
-  ShieldCheck,
-} from "lucide-react";
 import { classNames } from "@/lib/format";
 import { SOURCES } from "@/lib/sources/registry";
+import { LogoLockup } from "@/components/brand/Logo";
+import {
+  IcCommand,
+  IcSignals,
+  IcMeme,
+  IcToken,
+  IcNetwork,
+  IcVault,
+  IcAutomation,
+  IcSources,
+  IcOperator,
+  IcSettings,
+} from "@/components/brand/icons";
 
-const NAV = [
-  { href: "/", label: "Command Center", icon: LayoutDashboard },
-  { href: "/signals", label: "Signal Feed", icon: Radar },
-  { href: "/memes", label: "Meme Radar", icon: Sparkles },
-  { href: "/tokens", label: "Token Universe", icon: Coins },
-  { href: "/network", label: "Network Map", icon: Waypoints },
-  { href: "/portfolio", label: "Portfolio", icon: Wallet },
-  { href: "/automation", label: "Automation", icon: Bot },
-  { href: "/sources", label: "Data Sources", icon: Database },
-  { href: "/settings", label: "Settings", icon: Settings },
+type IconType = (p: { size?: number; className?: string }) => JSX.Element;
+
+const NAV: { href: string; label: string; icon: IconType }[] = [
+  { href: "/", label: "Command Center", icon: IcCommand },
+  { href: "/signals", label: "Signal Feed", icon: IcSignals },
+  { href: "/memes", label: "Meme Radar", icon: IcMeme },
+  { href: "/tokens", label: "Token Universe", icon: IcToken },
+  { href: "/network", label: "Network Map", icon: IcNetwork },
+  { href: "/portfolio", label: "Portfolio", icon: IcVault },
+  { href: "/automation", label: "Automation", icon: IcAutomation },
+  { href: "/profile", label: "Operator Console", icon: IcOperator },
+  { href: "/sources", label: "Data Sources", icon: IcSources },
+  { href: "/settings", label: "Settings", icon: IcSettings },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col border-r border-white/8 bg-base-950/70 backdrop-blur-xl lg:flex">
-      <div className="flex items-center gap-2.5 px-5 py-5">
-        <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-signal-green to-accent-cyan shadow-glow">
-          <ShieldCheck className="h-5 w-5 text-base-950" strokeWidth={2.5} />
-        </div>
-        <div className="leading-tight">
-          <div
-            className="glitch text-sm font-bold uppercase tracking-tight text-white"
-            data-text="SENTINEL"
-          >
-            SENTINEL
-          </div>
-          <div className="text-[10px] font-medium uppercase tracking-[0.25em] text-signal-green phosphor">
-            cyber intel
-          </div>
-        </div>
+      <div className="px-5 py-5">
+        <LogoLockup />
       </div>
 
-      <nav className="mt-2 flex-1 space-y-1 px-3">
+      <nav className="mt-1 flex-1 space-y-1 overflow-y-auto px-3" data-lenis-prevent>
         {NAV.map(({ href, label, icon: Icon }) => {
           const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
           return (
             <Link
               key={href}
               href={href}
+              aria-current={active ? "page" : undefined}
               className={classNames(
                 "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition",
                 active
-                  ? "bg-signal-green/10 text-white shadow-[inset_0_0_0_1px_rgba(34,227,155,0.25)]"
+                  ? "bg-signal-green/10 text-white shadow-[inset_0_0_0_1px_rgba(0,255,65,0.25)]"
                   : "text-white/50 hover:bg-white/5 hover:text-white/90"
               )}
             >
-              <Icon
+              <span
                 className={classNames(
-                  "h-[18px] w-[18px] transition",
-                  active ? "text-signal-green" : "text-white/40 group-hover:text-white/70"
+                  "transition",
+                  active
+                    ? "text-signal-green drop-shadow-[0_0_6px_rgba(0,255,65,0.6)]"
+                    : "text-white/40 group-hover:text-white/70"
                 )}
-                strokeWidth={2}
-              />
+              >
+                <Icon size={18} />
+              </span>
               {label}
             </Link>
           );
