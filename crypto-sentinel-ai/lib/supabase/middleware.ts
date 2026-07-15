@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { SUPABASE_ANON_KEY, SUPABASE_URL, isSupabaseConfigured } from "./config";
 
-const PUBLIC_PREFIXES = ["/login", "/signup", "/auth", "/api/auth"];
+const PUBLIC_PREFIXES = ["/login", "/signup", "/auth", "/api/auth", "/api/health"];
 
 /**
  * Refresh the Supabase auth session (so cookies stay valid) and gate routes.
