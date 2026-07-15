@@ -1,13 +1,14 @@
 import { Suspense } from "react";
-import { Radar, Sparkles, Lock, CheckCircle2 } from "lucide-react";
+import { IcCheck, IcLock, IcMeme, IcSignals } from "@/components/brand/icons";
+
 import { Logo } from "@/components/brand/Logo";
 import { AuthBackground } from "./AuthBackground";
 import { AuthForm } from "./AuthForm";
 
 const HIGHLIGHTS = [
-  { icon: Radar, text: "38+ sources fused into explainable risk scores" },
-  { icon: Sparkles, text: "Meme radar with on-chain corroboration" },
-  { icon: Lock, text: "Encrypted keys · 2FA · paper-trading by default" },
+  { icon: IcSignals, text: "38+ sources fused into explainable risk scores" },
+  { icon: IcMeme, text: "Meme radar with on-chain corroboration" },
+  { icon: IcLock, text: "Encrypted keys · 2FA · paper-trading by default" },
 ];
 
 const TRUST = ["No single-source alerts", "Runs at $0", "Not financial advice"];
@@ -63,7 +64,7 @@ export function AuthShell({ mode }: { mode: "login" | "signup" }) {
                 key={t}
                 className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] text-white/50"
               >
-                <CheckCircle2 className="h-3 w-3 text-signal-green" /> {t}
+                <IcCheck className="h-3 w-3 text-signal-green" /> {t}
               </span>
             ))}
           </div>

@@ -1,20 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import {
-  KeyRound,
-  ShieldCheck,
-  Fingerprint,
-  Mail,
-  MessageSquare,
-  Webhook,
-  Send,
-  Slack,
-  Smartphone,
-  Lock,
-  Check,
-  Loader2,
-} from "lucide-react";
+import { IcArrowUpRight, IcBell, IcBiometric, IcCheck, IcKey, IcLock, IcMail, IcNetwork, IcShield, IcSocial, IcSpinner } from "@/components/brand/icons";
+
 import { GlassCard, SectionTitle } from "@/components/ui/primitives";
 import { classNames } from "@/lib/format";
 import { saveNotificationsAction, saveExchangeKeyAction } from "@/app/(app)/settings/actions";
@@ -47,12 +35,12 @@ function Toggle({ on, set }: { on: boolean; set: (v: boolean) => void }) {
 }
 
 const CHANNELS = [
-  { key: "browser", label: "Browser push", icon: <Smartphone className="h-4 w-4" /> },
-  { key: "email", label: "Email", icon: <Mail className="h-4 w-4" /> },
-  { key: "telegram", label: "Telegram", icon: <Send className="h-4 w-4" /> },
-  { key: "discord", label: "Discord", icon: <MessageSquare className="h-4 w-4" /> },
-  { key: "slack", label: "Slack", icon: <Slack className="h-4 w-4" /> },
-  { key: "webhook", label: "Webhook", icon: <Webhook className="h-4 w-4" /> },
+  { key: "browser", label: "Browser push", icon: <IcBell className="h-4 w-4" /> },
+  { key: "email", label: "Email", icon: <IcMail className="h-4 w-4" /> },
+  { key: "telegram", label: "Telegram", icon: <IcArrowUpRight className="h-4 w-4" /> },
+  { key: "discord", label: "Discord", icon: <IcSocial className="h-4 w-4" /> },
+  { key: "slack", label: "Slack", icon: <IcSocial className="h-4 w-4" /> },
+  { key: "webhook", label: "Webhook", icon: <IcNetwork className="h-4 w-4" /> },
 ];
 
 const EXCHANGES = ["Binance", "Bybit", "OKX", "Coinbase Advanced"];
@@ -94,7 +82,7 @@ export function SettingsView({ initialSettings, initialKeys, persist }: Settings
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <div className="flex items-center justify-between rounded-xl border border-white/8 bg-white/[0.02] p-3">
             <div className="flex items-center gap-3">
-              <Fingerprint className="h-5 w-5 text-signal-green" />
+              <IcBiometric className="h-5 w-5 text-signal-green" />
               <div>
                 <div className="text-sm font-medium text-white/90">Two-factor authentication</div>
                 <div className="text-[11px] text-white/40">TOTP · required for trade execution</div>
@@ -104,7 +92,7 @@ export function SettingsView({ initialSettings, initialKeys, persist }: Settings
           </div>
           <div className="flex items-center justify-between rounded-xl border border-white/8 bg-white/[0.02] p-3">
             <div className="flex items-center gap-3">
-              <ShieldCheck className="h-5 w-5 text-signal-green" />
+              <IcShield className="h-5 w-5 text-signal-green" />
               <div>
                 <div className="text-sm font-medium text-white/90">Role-based access</div>
                 <div className="text-[11px] text-white/40">Owner · Analyst · Viewer</div>
@@ -121,7 +109,7 @@ export function SettingsView({ initialSettings, initialKeys, persist }: Settings
               key={f}
               className="flex items-center gap-1.5 rounded-lg border border-white/8 bg-white/[0.02] px-2.5 py-2"
             >
-              <Lock className="h-3 w-3 text-signal-green" /> {f}
+              <IcLock className="h-3 w-3 text-signal-green" /> {f}
             </div>
           ))}
         </div>
@@ -167,9 +155,9 @@ export function SettingsView({ initialSettings, initialKeys, persist }: Settings
               )}
             >
               {savingNotif ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <IcSpinner className="h-3.5 w-3.5 animate-spin" />
               ) : notifSaved ? (
-                <Check className="h-3.5 w-3.5" />
+                <IcCheck className="h-3.5 w-3.5" />
               ) : null}
               {notifSaved ? "Saved" : "Save preferences"}
             </button>
@@ -246,7 +234,7 @@ function ExchangeRow({
 
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-xl border border-white/8 bg-white/[0.02] p-3">
-      <KeyRound className="h-4 w-4 text-white/40" />
+      <IcKey className="h-4 w-4 text-white/40" />
       <span className="w-32 text-sm font-medium text-white/85">{exchange}</span>
       <input
         value={apiKey}
@@ -273,9 +261,9 @@ function ExchangeRow({
         )}
       >
         {saving ? (
-          <Loader2 className="h-3 w-3 animate-spin" />
+          <IcSpinner className="h-3 w-3 animate-spin" />
         ) : done ? (
-          <Check className="h-3 w-3" />
+          <IcCheck className="h-3 w-3" />
         ) : null}
         {done && !apiKey ? "Connected" : "Save"}
       </button>

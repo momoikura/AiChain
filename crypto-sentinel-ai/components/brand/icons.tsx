@@ -189,3 +189,42 @@ export const IcBell = (p: P) => (
 export const IcLogout = (p: P) => (
   <Svg {...p}><path d="M14 6V5a2 2 0 00-2-2H6a2 2 0 00-2 2v14a2 2 0 002 2h6a2 2 0 002-2v-1M9 12h11M17 9l3 3-3 3" /></Svg>
 );
+export const IcArrowRight = (p: P) => (
+  <Svg {...p}><path d="M4 12h15M13 6l6 6-6 6" /></Svg>
+);
+export const IcArrowLeft = (p: P) => (
+  <Svg {...p}><path d="M20 12H5M11 6l-6 6 6 6" /></Svg>
+);
+export const IcMail = (p: P) => (
+  <Svg {...p}><rect x="3.5" y="6" width="17" height="12" rx="2" /><path d="M4.5 7.5L12 13l7.5-5.5" /></Svg>
+);
+export const IcEye = (p: P) => (
+  <Svg {...p}><path d="M2.5 12S6 6 12 6s9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z" /><circle cx="12" cy="12" r="2.6" /></Svg>
+);
+export const IcEyeOff = (p: P) => (
+  <Svg {...p}><path d="M4 4l16 16M9.5 9.6a2.6 2.6 0 003.7 3.7M6.7 6.9C4.2 8.4 2.5 12 2.5 12s3.5 6 9.5 6c1.6 0 3-.4 4.2-1M14 6.3C13.4 6.1 12.7 6 12 6 11 6 10 6.2 9 6.6" /></Svg>
+);
+export const IcAlert = (p: P) => (
+  <Svg {...p}><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V13" /><circle cx="12" cy="16" r="0.6" fill="currentColor" stroke="none" /></Svg>
+);
+export const IcSpinner = (p: P) => (
+  <Svg {...p}><path d="M12 3a9 9 0 109 9" /></Svg>
+);
+export const IcMinus = (p: P) => (
+  <Svg {...p}><circle cx="12" cy="12" r="8.5" /><path d="M8.5 12h7" /></Svg>
+);
+export const IcLiquidity = (p: P) => (
+  <Svg {...p}><path d="M12 3.5c4 4.5 6 7 6 9.5a6 6 0 11-12 0c0-2.5 2-5 6-9.5z" /></Svg>
+);
+export const IcPercent = (p: P) => (
+  <Svg {...p}><path d="M6 18L18 6" /><circle cx="7.5" cy="7.5" r="2" /><circle cx="16.5" cy="16.5" r="2" /></Svg>
+);
+export const IcBranch = (p: P) => (
+  <Svg {...p}><circle cx="7" cy="6" r="2.2" /><circle cx="7" cy="18" r="2.2" /><circle cx="17" cy="8" r="2.2" /><path d="M7 8.2v7.6M7 12h4a3 3 0 003-3v-.2" /></Svg>
+);
+export const IcNews = (p: P) => (
+  <Svg {...p}><rect x="4" y="5" width="16" height="14" rx="2" /><path d="M7.5 9h6M7.5 12.5h6M7.5 16h3" /></Svg>
+);
+export const IcSocial = (p: P) => (
+  <Svg {...p}><path d="M6.5 5.5h11a2 2 0 012 2v6a2 2 0 01-2 2H10l-4 3v-3H6.5a2 2 0 01-2-2v-6a2 2 0 012-2z" /></Svg>
+);

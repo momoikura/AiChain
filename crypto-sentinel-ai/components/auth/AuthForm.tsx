@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { IcAlert, IcArrowRight, IcEye, IcEyeOff, IcLock, IcMail, IcOperator, IcSpinner } from "@/components/brand/icons";
+
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Mail, Lock, User, ArrowRight, Loader2, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { classNames } from "@/lib/format";
 
 type Mode = "login" | "signup";
@@ -68,21 +69,21 @@ export function AuthForm({ mode }: { mode: Mode }) {
     <form onSubmit={submit} className="space-y-4">
       {error && (
         <div className="flex animate-fadeUp items-start gap-2 rounded-xl border border-signal-red/30 bg-signal-red/10 px-3 py-2.5 text-[13px] text-signal-red">
-          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+          <IcAlert className="mt-0.5 h-4 w-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {notice && (
         <div className="flex animate-fadeUp items-start gap-2 rounded-xl border border-signal-green/30 bg-signal-green/10 px-3 py-2.5 text-[13px] text-signal-green">
-          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+          <IcAlert className="mt-0.5 h-4 w-4 shrink-0" />
           <span>{notice}</span>
         </div>
       )}
 
       {mode === "signup" && (
         <Field
-          icon={<User className="h-4 w-4" />}
+          icon={<IcOperator className="h-4 w-4" />}
           label="Full name"
           type="text"
           value={name}
@@ -93,7 +94,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
       )}
 
       <Field
-        icon={<Mail className="h-4 w-4" />}
+        icon={<IcMail className="h-4 w-4" />}
         label="Email"
         type="email"
         value={email}
@@ -105,7 +106,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
       <div>
         <div className="relative">
           <Field
-            icon={<Lock className="h-4 w-4" />}
+            icon={<IcLock className="h-4 w-4" />}
             label="Password"
             type={showPw ? "text" : "password"}
             value={password}
@@ -120,7 +121,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
             tabIndex={-1}
             aria-label={showPw ? "Hide password" : "Show password"}
           >
-            {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {showPw ? <IcEyeOff className="h-4 w-4" /> : <IcEye className="h-4 w-4" />}
           </button>
         </div>
       </div>
@@ -136,11 +137,11 @@ export function AuthForm({ mode }: { mode: Mode }) {
         {/* shimmer sweep */}
         <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:animate-shimmer" />
         {loading ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <IcSpinner className="h-4 w-4 animate-spin" />
         ) : (
           <>
             {mode === "login" ? "Sign in" : "Create account"}
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            <IcArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </>
         )}
       </button>

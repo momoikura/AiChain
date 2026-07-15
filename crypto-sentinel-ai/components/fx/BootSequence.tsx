@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { MatrixRain } from "./MatrixRain";
+import { Logo } from "@/components/brand/Logo";
+import { ScrambleText } from "./ScrambleText";
 
 /**
  * Full-screen terminal boot sequence. Plays once per browser session
@@ -92,6 +94,27 @@ export function BootSequence() {
       <div className="crt-overlay" />
 
       <div className="relative z-10 w-full max-w-2xl px-6 font-mono">
+        {/* Logo motion-reveal: emblem scales/decodes in, wordmark descrambles */}
+        <div className="mb-5 flex items-center gap-3">
+          <div
+            className="drop-shadow-[0_0_18px_rgba(0,255,65,0.65)]"
+            style={{ animation: "fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) both" }}
+          >
+            <Logo size={54} />
+          </div>
+          <div className="leading-tight">
+            <ScrambleText
+              as="div"
+              text="SENTINEL"
+              className="phosphor text-xl font-bold tracking-[0.22em]"
+              duration={950}
+            />
+            <div className="text-[10px] uppercase tracking-[0.35em] text-signal-green/50">
+              cyber intelligence os
+            </div>
+          </div>
+        </div>
+
         <div className="mb-4 flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] text-signal-green/70">
           <span className="h-2 w-2 animate-pulse rounded-full bg-signal-green" />
           crypto sentinel ai · secure boot

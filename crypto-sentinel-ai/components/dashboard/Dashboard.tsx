@@ -1,7 +1,6 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
-import { IcSignals, IcPulse, IcThreat, IcSources } from "@/components/brand/icons";
+import { IcArrowRight, IcPulse, IcSignals, IcSources, IcThreat } from "@/components/brand/icons";
 import Link from "next/link";
 import { useLiveSnapshot } from "@/lib/hooks/useLive";
 import { fmtCompact, timeAgo, classNames } from "@/lib/format";
@@ -103,7 +102,7 @@ export function Dashboard({ initialTick }: { initialTick: number }) {
           href="/signals"
           className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm font-medium text-white/80 transition hover:border-signal-green/40 hover:text-white"
         >
-          Open signal feed <ArrowRight className="h-4 w-4" />
+          Open signal feed <IcArrowRight className="h-4 w-4" />
         </Link>
         </div>
       </div>

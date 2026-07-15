@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Activity, Droplet, Percent, Layers, TrendingUp } from "lucide-react";
+import { IcArrowLeft, IcLiquidity, IcPercent, IcPulse, IcSources, IcTrend } from "@/components/brand/icons";
+
 import { useLiveSnapshot } from "@/lib/hooks/useLive";
 import { fmtPct, fmtUsd, fmtPrice, fmtNum, timeAgo, classNames } from "@/lib/format";
 import { AreaChart, ConfidenceRing, ComponentBar } from "@/components/ui/charts";
@@ -44,7 +45,7 @@ export function TokenDetail({ symbol, initialTick }: { symbol: string; initialTi
   return (
     <div className="space-y-6">
       <Link href="/tokens" className="inline-flex items-center gap-1.5 text-sm text-white/50 transition hover:text-white">
-        <ArrowLeft className="h-4 w-4" /> Token Universe
+        <IcArrowLeft className="h-4 w-4" /> Token Universe
       </Link>
 
       {/* Header */}
@@ -82,12 +83,12 @@ export function TokenDetail({ symbol, initialTick }: { symbol: string; initialTi
         </div>
 
         <div className="mt-5 grid gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
-          <Metric icon={<Layers className="h-4 w-4" />} label="Market Cap" value={fmtUsd(token.marketCap, { compact: true })} />
-          <Metric icon={<Layers className="h-4 w-4" />} label="FDV" value={fmtUsd(token.fdv, { compact: true })} />
-          <Metric icon={<Activity className="h-4 w-4" />} label="Volume 24h" value={fmtUsd(token.volume24h, { compact: true })} />
-          <Metric icon={<Droplet className="h-4 w-4" />} label="Liquidity" value={fmtUsd(token.liquidity, { compact: true })} />
-          <Metric icon={<Percent className="h-4 w-4" />} label="Funding" value={`${(token.fundingRate * 100).toFixed(3)}%`} />
-          <Metric icon={<TrendingUp className="h-4 w-4" />} label="Open Interest" value={fmtUsd(token.openInterest, { compact: true })} />
+          <Metric icon={<IcSources className="h-4 w-4" />} label="Market Cap" value={fmtUsd(token.marketCap, { compact: true })} />
+          <Metric icon={<IcSources className="h-4 w-4" />} label="FDV" value={fmtUsd(token.fdv, { compact: true })} />
+          <Metric icon={<IcPulse className="h-4 w-4" />} label="Volume 24h" value={fmtUsd(token.volume24h, { compact: true })} />
+          <Metric icon={<IcLiquidity className="h-4 w-4" />} label="Liquidity" value={fmtUsd(token.liquidity, { compact: true })} />
+          <Metric icon={<IcPercent className="h-4 w-4" />} label="Funding" value={`${(token.fundingRate * 100).toFixed(3)}%`} />
+          <Metric icon={<IcTrend className="h-4 w-4" />} label="Open Interest" value={fmtUsd(token.openInterest, { compact: true })} />
         </div>
       </div>
 

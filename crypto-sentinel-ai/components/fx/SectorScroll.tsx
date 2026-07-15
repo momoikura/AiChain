@@ -1,19 +1,10 @@
 "use client";
 
 import { memo, useEffect, useRef, useState } from "react";
+import { IcBranch, IcNetwork, IcNews, IcShield, IcSocial, IcSources, IcToken, IcTrend } from "@/components/brand/icons";
+
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {
-  Boxes,
-  LineChart,
-  Blocks,
-  GitBranch,
-  Landmark,
-  Newspaper,
-  MessagesSquare,
-  Coins,
-} from "lucide-react";
-
 /**
  * GSAP horizontal-pinned scrollytelling — the 8 intelligence sectors scroll
  * sideways while the section is pinned vertically (classic Awwwards move).
@@ -24,14 +15,14 @@ import {
  */
 
 const SECTORS = [
-  { id: "01", label: "On-Chain", color: "#00ff41", icon: Boxes, desc: "Smart-money, whale, VC, exchange & team wallet clustering. Accumulation, distribution, bridges." },
-  { id: "02", label: "Market", color: "#22d3ff", icon: LineChart, desc: "Price, liquidity, funding, open interest, liquidations across 11 venues & DEXs." },
-  { id: "03", label: "DeFi", color: "#00ffe0", icon: Blocks, desc: "TVL, new pools, stablecoin flows, protocol revenue, treasury growth." },
-  { id: "04", label: "Developer", color: "#ffcf3a", icon: GitBranch, desc: "GitHub commits, contributors, releases, contract deployments. Momentum = conviction." },
-  { id: "05", label: "Governance", color: "#22d3ff", icon: Landmark, desc: "DAO proposals, buybacks, burns, votes, partnerships, ecosystem grants." },
-  { id: "06", label: "News", color: "#b26bff", icon: Newspaper, desc: "NLP over reputable outlets — entities, sentiment, rumor vs confirmed, dedup." },
-  { id: "07", label: "Social", color: "#b26bff", icon: MessagesSquare, desc: "Mentions, engagement, founder posts, bot/spam probability. Never fires alone." },
-  { id: "08", label: "Fusion", color: "#00ff41", icon: Coins, desc: "Multi-stage engine fuses all sectors into one explainable confidence score." },
+  { id: "01", label: "On-Chain", color: "#00ff41", icon: IcNetwork, desc: "Smart-money, whale, VC, exchange & team wallet clustering. Accumulation, distribution, bridges." },
+  { id: "02", label: "Market", color: "#22d3ff", icon: IcTrend, desc: "Price, liquidity, funding, open interest, liquidations across 11 venues & DEXs." },
+  { id: "03", label: "DeFi", color: "#00ffe0", icon: IcSources, desc: "TVL, new pools, stablecoin flows, protocol revenue, treasury growth." },
+  { id: "04", label: "Developer", color: "#ffcf3a", icon: IcBranch, desc: "GitHub commits, contributors, releases, contract deployments. Momentum = conviction." },
+  { id: "05", label: "Governance", color: "#22d3ff", icon: IcShield, desc: "DAO proposals, buybacks, burns, votes, partnerships, ecosystem grants." },
+  { id: "06", label: "News", color: "#b26bff", icon: IcNews, desc: "NLP over reputable outlets — entities, sentiment, rumor vs confirmed, dedup." },
+  { id: "07", label: "Social", color: "#b26bff", icon: IcSocial, desc: "Mentions, engagement, founder posts, bot/spam probability. Never fires alone." },
+  { id: "08", label: "Fusion", color: "#00ff41", icon: IcToken, desc: "Multi-stage engine fuses all sectors into one explainable confidence score." },
 ];
 
 function SectorScrollBase() {

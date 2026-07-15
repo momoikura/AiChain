@@ -1,27 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Bot,
-  Shield,
-  Power,
-  Gauge,
-  AlertOctagon,
-  ArrowRight,
-  Lock,
-  FlaskConical,
-  Hand,
-  Zap,
-} from "lucide-react";
+import { IcArrowRight, IcAutomation, IcBolt, IcLock, IcOperator, IcPulse, IcShield, IcThreat } from "@/components/brand/icons";
+
 import { fmtUsd, timeAgo, classNames } from "@/lib/format";
 import { GlassCard, SectionTitle, Chip } from "@/components/ui/primitives";
 import { toggleRuleAction } from "@/app/(app)/automation/actions";
 import type { RuleCondition, RuleMode, TradingRule } from "@/lib/types";
 
 const MODE_META: Record<RuleMode, { icon: React.ReactNode; label: string; tone: string }> = {
-  paper: { icon: <FlaskConical className="h-3.5 w-3.5" />, label: "Paper", tone: "text-signal-blue" },
-  "manual-approval": { icon: <Hand className="h-3.5 w-3.5" />, label: "Manual approval", tone: "text-signal-yellow" },
-  automatic: { icon: <Zap className="h-3.5 w-3.5" />, label: "Automatic", tone: "text-signal-green" },
+  paper: { icon: <IcAutomation className="h-3.5 w-3.5" />, label: "Paper", tone: "text-signal-blue" },
+  "manual-approval": { icon: <IcOperator className="h-3.5 w-3.5" />, label: "Manual approval", tone: "text-signal-yellow" },
+  automatic: { icon: <IcBolt className="h-3.5 w-3.5" />, label: "Automatic", tone: "text-signal-green" },
 };
 
 function conditionText(c: RuleCondition): string {
@@ -58,7 +48,7 @@ function RuleCard({ rule, onToggle }: { rule: TradingRule; onToggle: () => void 
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className={classNames("flex h-10 w-10 items-center justify-center rounded-xl", rule.side === "buy" ? "bg-signal-green/10 text-signal-green" : "bg-signal-red/10 text-signal-red")}>
-            {rule.side === "buy" ? <ArrowRight className="h-5 w-5" /> : <Power className="h-5 w-5" />}
+            {rule.side === "buy" ? <IcArrowRight className="h-5 w-5" /> : <IcBolt className="h-5 w-5" />}
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -182,7 +172,7 @@ export function AutomationView({
               : "border-signal-red/40 bg-signal-red/10 text-signal-red hover:bg-signal-red/20"
           )}
         >
-          <AlertOctagon className="h-4 w-4" />
+          <IcThreat className="h-4 w-4" />
           {emergencyStop ? "Resume trading" : "Emergency stop"}
         </button>
       </div>
@@ -198,28 +188,28 @@ export function AutomationView({
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <GlassCard className="p-4">
           <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-white/40">
-            <Bot className="h-4 w-4 text-signal-green" /> Active Rules
+            <IcAutomation className="h-4 w-4 text-signal-green" /> Active Rules
           </div>
           <div className="mt-1.5 tabular text-2xl font-bold text-white">{activeCount}</div>
           <div className="text-[11px] text-white/40">{rules.length} configured</div>
         </GlassCard>
         <GlassCard className="p-4">
           <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-white/40">
-            <Shield className="h-4 w-4 text-signal-blue" /> Execution Mode
+            <IcShield className="h-4 w-4 text-signal-blue" /> Execution Mode
           </div>
           <div className="mt-1.5 text-2xl font-bold text-signal-blue">Paper</div>
           <div className="text-[11px] text-white/40">no live API keys</div>
         </GlassCard>
         <GlassCard className="p-4">
           <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-white/40">
-            <Gauge className="h-4 w-4 text-signal-yellow" /> Circuit Breaker
+            <IcPulse className="h-4 w-4 text-signal-yellow" /> Circuit Breaker
           </div>
           <div className="mt-1.5 text-2xl font-bold text-signal-green">Armed</div>
           <div className="text-[11px] text-white/40">halts on abnormal volatility</div>
         </GlassCard>
         <GlassCard className="p-4">
           <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-white/40">
-            <Lock className="h-4 w-4 text-signal-violet" /> Confidence Gate
+            <IcLock className="h-4 w-4 text-signal-violet" /> Confidence Gate
           </div>
           <div className="mt-1.5 tabular text-2xl font-bold text-white">≥ 90</div>
           <div className="text-[11px] text-white/40">min to auto-execute</div>
@@ -237,7 +227,7 @@ export function AutomationView({
 
       <GlassCard className="p-5">
         <div className="flex items-start gap-3">
-          <Shield className="mt-0.5 h-5 w-5 shrink-0 text-signal-green" />
+          <IcShield className="mt-0.5 h-5 w-5 shrink-0 text-signal-green" />
           <div className="text-[12px] leading-relaxed text-white/50">
             <strong className="text-white/70">Safety model.</strong> Every rule enforces max position
             size, daily loss limits, stop-loss, trailing stops and cooldowns. Automatic mode requires

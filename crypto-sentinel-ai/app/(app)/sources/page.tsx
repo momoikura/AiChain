@@ -1,9 +1,9 @@
 import { SOURCES, CATEGORY_LABEL } from "@/lib/sources/registry";
+import { IcShield } from "@/components/brand/icons";
+
 import { GlassCard, SectionTitle } from "@/components/ui/primitives";
 import type { DataSource, SourceCategory } from "@/lib/types";
 import { classNames } from "@/lib/format";
-import { BadgeCheck } from "lucide-react";
-
 const COST_META: Record<DataSource["cost"], { label: string; cls: string }> = {
   free: { label: "Free", cls: "border-signal-green/30 bg-signal-green/10 text-signal-green" },
   freemium: { label: "Freemium", cls: "border-signal-yellow/30 bg-signal-yellow/10 text-signal-yellow" },
@@ -44,7 +44,7 @@ export default function Page() {
 
       {/* Zero-cost guarantee banner */}
       <div className="glass flex flex-wrap items-center gap-3 rounded-2xl border border-signal-green/25 bg-signal-green/5 p-4">
-        <BadgeCheck className="h-6 w-6 shrink-0 text-signal-green" />
+        <IcShield className="h-6 w-6 shrink-0 text-signal-green" />
         <div className="min-w-0 flex-1">
           <div className="text-sm font-semibold text-white">Runs at $0 — no paid API required</div>
           <p className="text-[12px] leading-relaxed text-white/50">

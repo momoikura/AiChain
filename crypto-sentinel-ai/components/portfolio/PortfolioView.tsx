@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { CheckCircle2, XCircle, MinusCircle } from "lucide-react";
+import { IcCheck, IcClose, IcMinus } from "@/components/brand/icons";
+
 import { getPortfolio } from "@/lib/data/portfolio";
 import { fmtPct, fmtUsd, fmtNum, timeAgo, classNames } from "@/lib/format";
 import { AreaChart, Sparkline } from "@/components/ui/charts";
@@ -19,9 +20,9 @@ function Stat({ label, value, sub, tone }: { label: string; value: string; sub?:
 }
 
 const STATUS_META: Record<TradeRecord["status"], { icon: React.ReactNode; tone: string; label: string }> = {
-  executed: { icon: <CheckCircle2 className="h-3.5 w-3.5" />, tone: "text-signal-green", label: "Executed" },
-  rejected: { icon: <XCircle className="h-3.5 w-3.5" />, tone: "text-signal-red", label: "Rejected" },
-  missed: { icon: <MinusCircle className="h-3.5 w-3.5" />, tone: "text-signal-yellow", label: "Missed" },
+  executed: { icon: <IcCheck className="h-3.5 w-3.5" />, tone: "text-signal-green", label: "Executed" },
+  rejected: { icon: <IcClose className="h-3.5 w-3.5" />, tone: "text-signal-red", label: "Rejected" },
+  missed: { icon: <IcMinus className="h-3.5 w-3.5" />, tone: "text-signal-yellow", label: "Missed" },
 };
 
 export function PortfolioView({ tick }: { tick: number }) {
