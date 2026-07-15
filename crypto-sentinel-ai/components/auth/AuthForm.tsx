@@ -11,10 +11,29 @@ type Mode = "login" | "signup";
 
 const DEMO = { email: "demo@sentinel.ai", password: "sentinel" };
 
+/**
+ * Only allow same-origin, absolute-path redirects. Blocks open-redirect
+ * payloads like `//evil.com`, `https://evil.com`, `/\evil.com`, `javascript:`.
+ */
+function safeNext(raw: string | null): string {
+  if (!raw) return "/";
+  let v = raw;
+  try {
+    v = decodeURIComponent(raw);
+  } catch {
+    return "/";
+  }
+  if (!v.startsWith("/")) return "/"; // must be a root-relative path
+  if (v.startsWith("//")) return "/"; // protocol-relative → external
+  // eslint-disable-next-line no-control-regex
+  if (/[\x00-\x1f\\]/.test(v) || v.includes("://")) return "/";
+  return v;
+}
+
 export function AuthForm({ mode }: { mode: Mode }) {
   const router = useRouter();
   const params = useSearchParams();
-  const next = params.get("next") || "/";
+  const next = safeNext(params.get("next"));
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

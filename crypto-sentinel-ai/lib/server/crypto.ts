@@ -8,10 +8,16 @@ import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from "crypt
  * APIKEY_ENC_SECRET in the environment — changing it invalidates stored keys.
  */
 
-const SECRET = process.env.APIKEY_ENC_SECRET || "dev-only-insecure-apikey-secret";
-
 function key(): Buffer {
-  return scryptSync(SECRET, "sentinel-apikey-salt", 32);
+  const secret = process.env.APIKEY_ENC_SECRET;
+  // Fail closed in production: never encrypt real keys under a known dev secret.
+  if (!secret || secret.length < 16) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("APIKEY_ENC_SECRET is not configured (min 16 chars)");
+    }
+    return scryptSync("dev-only-insecure-local", "sentinel-apikey-salt", 32);
+  }
+  return scryptSync(secret, "sentinel-apikey-salt", 32);
 }
 
 export function encryptSecret(plaintext: string): string {
