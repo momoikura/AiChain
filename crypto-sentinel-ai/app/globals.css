@@ -12,6 +12,32 @@
   box-sizing: border-box;
 }
 
+/* ── Cross-platform touch behaviour ──────────────────────────────────────── */
+/* Remove the 300ms tap delay + accidental double-tap zoom on tappable UI. */
+button,
+a,
+[role="button"],
+summary,
+label[for] {
+  touch-action: manipulation;
+}
+
+/* iOS zooms the whole page when focusing an input whose font is < 16px.
+   Force 16px on phones so focusing a field never zooms/reflows. */
+@media (max-width: 640px) {
+  input:not([type="range"]),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Let the finger scroll the page vertically even when it starts on a WebGL
+   canvas (3D scenes must not trap touch scrolling). */
+canvas {
+  touch-action: pan-y;
+}
+
 html,
 body {
   padding: 0;
