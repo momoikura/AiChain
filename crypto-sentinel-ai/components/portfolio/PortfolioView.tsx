@@ -26,7 +26,30 @@ const STATUS_META: Record<TradeRecord["status"], { icon: React.ReactNode; tone: 
   missed: { icon: <IcMinus className="h-3.5 w-3.5" />, tone: "text-signal-yellow", label: "Missed" },
 };
 
-export function PortfolioView({ tick, connected }: { tick: number; connected: boolean }) {
+interface LivePosition {
+  asset: string;
+  qty: number;
+  price: number | null;
+  valueUsd: number;
+  venues: string[];
+}
+interface LivePortfolio {
+  connected: string[];
+  positions: LivePosition[];
+  totalValueUsd: number;
+  pricedCoverage: number;
+  errors: { exchange: string; message: string }[];
+}
+
+export function PortfolioView({
+  tick,
+  connected,
+  live,
+}: {
+  tick: number;
+  connected: boolean;
+  live?: LivePortfolio | null;
+}) {
   const { stats, positions, trades } = useMemo(() => getPortfolio(tick), [tick]);
   const now = 1_752_000_000_000 + tick * 60_000;
 
@@ -77,6 +100,75 @@ export function PortfolioView({ tick, connected }: { tick: number; connected: bo
             keys are encrypted (AES-256-GCM) before storage · read-only recommended
           </p>
         </GlassCard>
+      </div>
+    );
+  }
+
+  // Connected → REAL balances pulled from the linked exchanges, valued live.
+  if (live) {
+    const priced = Math.round(live.pricedCoverage * 100);
+    return (
+      <div className="space-y-6">
+        {header}
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <Stat label="Portfolio Value" value={fmtUsd(live.totalValueUsd, { compact: true })} sub="live exchange balances" tone="text-signal-green" />
+          <Stat label="Assets" value={String(live.positions.length)} sub={`${priced}% priced`} />
+          <Stat label="Venues" value={String(live.connected.length)} sub={live.connected.join(" · ") || "—"} tone="text-signal-blue" />
+          <Stat label="Source" value="LIVE" sub="read-only API · signed" tone="text-signal-green" />
+        </div>
+
+        {live.errors.length > 0 && (
+          <GlassCard className="border-signal-red/25 bg-signal-red/5 p-4">
+            <div className="text-[11px] font-semibold uppercase tracking-widest text-signal-red">
+              Exchange errors
+            </div>
+            <ul className="mt-1.5 space-y-0.5">
+              {live.errors.map((e, i) => (
+                <li key={i} className="font-mono text-[12px] text-white/60">
+                  {e.exchange}: {e.message}
+                </li>
+              ))}
+            </ul>
+          </GlassCard>
+        )}
+
+        <div className="space-y-3">
+          <SectionTitle title="Holdings" subtitle="Aggregated across linked venues · valued at live prices" />
+          {live.positions.length === 0 ? (
+            <GlassCard className="p-8 text-center text-sm text-white/50">
+              Connected, but these accounts hold no spot balances.
+            </GlassCard>
+          ) : (
+            <div className="space-y-2.5">
+              {live.positions.map((p) => (
+                <GlassCard key={p.asset} className="flex flex-wrap items-center gap-3 p-3.5">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-signal-green/10 text-[11px] font-bold text-signal-green">
+                    {p.asset.slice(0, 4)}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-semibold text-white">{p.asset}</div>
+                    <div className="font-mono text-[11px] text-white/40">{p.venues.join(" · ")}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="tabular text-sm text-white/80">{fmtNum(p.qty, p.qty < 1 ? 6 : 4)}</div>
+                    <div className="tabular text-[11px] text-white/40">
+                      {p.price != null ? fmtUsd(p.price, { dp: p.price < 1 ? 4 : 2 }) : "unpriced"}
+                    </div>
+                  </div>
+                  <div className="tabular w-24 text-right text-sm font-semibold text-signal-green">
+                    {p.price != null ? fmtUsd(p.valueUsd, { compact: true }) : "—"}
+                  </div>
+                </GlassCard>
+              ))}
+            </div>
+          )}
+          <p className="text-[11px] leading-relaxed text-white/35">
+            Balances are read live from your exchange via signed read-only API calls. PnL, win rate
+            and the decision log need trade history, which isn&apos;t derivable from a balance
+            snapshot — those populate once trade-history sync is enabled.
+          </p>
+        </div>
       </div>
     );
   }

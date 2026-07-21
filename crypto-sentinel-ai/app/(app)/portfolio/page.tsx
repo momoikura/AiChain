@@ -1,20 +1,21 @@
 import { PortfolioView } from "@/components/portfolio/PortfolioView";
 import { currentTick } from "@/lib/data/store";
-import { listExchangeKeys } from "@/lib/server/db/keys";
+import { fetchLivePortfolio, type LivePortfolio } from "@/lib/server/portfolio/live";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  // The portfolio only has data once the operator has actually linked an
-  // exchange. No connection → empty state (never fabricate holdings).
-  let connected = false;
+  // Real balances from the operator's linked exchanges. Nothing linked (or a
+  // failure) → the view renders its zero state; we never fabricate holdings.
+  let live: LivePortfolio | null = null;
   if (isSupabaseConfigured()) {
     try {
-      connected = (await listExchangeKeys()).length > 0;
+      live = await fetchLivePortfolio();
     } catch {
-      connected = false;
+      live = null;
     }
   }
-  return <PortfolioView tick={currentTick()} connected={connected} />;
+  const connected = !!live && live.connected.length > 0;
+  return <PortfolioView tick={currentTick()} connected={connected} live={live} />;
 }

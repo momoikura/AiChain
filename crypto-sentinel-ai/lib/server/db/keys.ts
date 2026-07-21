@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { encryptSecret, maskSecret } from "@/lib/server/crypto";
+import { encryptSecret, decryptSecret, maskSecret } from "@/lib/server/crypto";
 
 /**
  * Exchange API keys. Secrets are encrypted app-side (AES-256-GCM) before they
@@ -60,6 +60,40 @@ export async function saveExchangeKey(input: {
     { onConflict: "user_id,exchange" }
   );
   if (error) throw error;
+}
+
+/**
+ * SERVER-ONLY: decrypt the operator's own keys for signing exchange requests.
+ * RLS scopes this to the caller, so it can never return another user's keys.
+ * Never expose the result to the client or log it.
+ */
+export async function getExchangeCredentials(): Promise<
+  { exchange: string; apiKey: string; apiSecret: string }[]
+> {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("exchange_keys")
+    .select("exchange, api_key_cipher, api_secret_cipher");
+  if (error) throw error;
+
+  const out: { exchange: string; apiKey: string; apiSecret: string }[] = [];
+  for (const row of data ?? []) {
+    try {
+      out.push({
+        exchange: row.exchange as string,
+        apiKey: decryptSecret(row.api_key_cipher as string),
+        apiSecret: decryptSecret(row.api_secret_cipher as string),
+      });
+    } catch {
+      // Ciphertext unreadable (e.g. APIKEY_ENC_SECRET rotated) — skip it.
+    }
+  }
+  return out;
 }
 
 export async function deleteExchangeKey(id: string): Promise<void> {
