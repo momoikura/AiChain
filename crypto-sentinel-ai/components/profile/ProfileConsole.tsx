@@ -64,7 +64,15 @@ function Vital({ icon, label, value, tone = "text-signal-green" }: { icon: React
   );
 }
 
-export function ProfileConsole({ name, email }: { name: string; email: string }) {
+export function ProfileConsole({
+  name,
+  email,
+  connectedExchanges = [],
+}: {
+  name: string;
+  email: string;
+  connectedExchanges?: string[];
+}) {
   const d = useMemo(() => {
     const seed = hashSeed(email);
     const rng = new Rng(seed);
@@ -83,23 +91,21 @@ export function ProfileConsole({ name, email }: { name: string; email: string })
       rejected: rng.int(20, 180),
       winRate: 58 + rng.int(0, 18),
       aiQueries: rng.int(3200, 24000),
-      exchanges: [
-        { name: "Binance", ok: rng.bool(0.6) },
-        { name: "Bybit", ok: rng.bool(0.5) },
-        { name: "OKX", ok: rng.bool(0.35) },
-        { name: "Coinbase", ok: rng.bool(0.4) },
-      ],
+      // Real linked exchanges only — no invented connection status.
+      exchanges: ["Binance", "Bybit", "OKX", "Coinbase"].map((n) => ({
+        name: n,
+        ok: connectedExchanges.some((e) => e.toLowerCase().startsWith(n.toLowerCase())),
+      })),
       timeline: [
         { t: "Acknowledged RED alert · SUI distribution", ago: 6 },
         { t: "Adjusted rule · Smart-money accumulation", ago: 42 },
         { t: "Opened dossier · WIF", ago: 88 },
         { t: "Emergency stop toggled", ago: 210 },
-        { t: "Connected exchange key · Bybit", ago: 640 },
         { t: "Login · secure uplink established", ago: 1440 },
       ].map((x) => ({ ...x, ts: now - x.ago * 60_000 })),
       now,
     };
-  }, [email]);
+  }, [email, connectedExchanges]);
 
   return (
     <div className="space-y-6">

@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { IcCheck, IcClose, IcMinus } from "@/components/brand/icons";
+import Link from "next/link";
+import { IcCheck, IcClose, IcMinus, IcVault, IcArrowRight } from "@/components/brand/icons";
 
 import { getPortfolio } from "@/lib/data/portfolio";
 import { fmtPct, fmtUsd, fmtNum, timeAgo, classNames } from "@/lib/format";
@@ -25,19 +26,64 @@ const STATUS_META: Record<TradeRecord["status"], { icon: React.ReactNode; tone: 
   missed: { icon: <IcMinus className="h-3.5 w-3.5" />, tone: "text-signal-yellow", label: "Missed" },
 };
 
-export function PortfolioView({ tick }: { tick: number }) {
+export function PortfolioView({ tick, connected }: { tick: number; connected: boolean }) {
   const { stats, positions, trades } = useMemo(() => getPortfolio(tick), [tick]);
   const now = 1_752_000_000_000 + tick * 60_000;
 
+  const header = (
+    <div>
+      <div className="mb-1 font-mono text-[11px] uppercase tracking-[0.25em] text-signal-green/50">
+        <span className="text-signal-green/30">operator@sentinel</span>:~/portfolio$
+      </div>
+      <h1 className="text-2xl font-bold tracking-tight text-white">Portfolio Intelligence</h1>
+      <p className="mt-1 text-sm text-white/50">
+        Paper-trading account · performance, AI attribution, and the full decision log
+        (executed, rejected &amp; missed).
+      </p>
+    </div>
+  );
+
+  // No exchange linked → show a true zero state rather than inventing holdings.
+  if (!connected) {
+    return (
+      <div className="space-y-6">
+        {header}
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <Stat label="Portfolio Value" value="$0.00" sub="no exchange linked" />
+          <Stat label="Total PnL" value="$0.00" sub="—" />
+          <Stat label="Win Rate" value="—" sub="no trades yet" />
+          <Stat label="AI Win Rate" value="—" sub="no trades yet" />
+        </div>
+
+        <GlassCard className="hud p-8 text-center sm:p-12">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-signal-green/25 bg-signal-green/5 text-signal-green shadow-glow">
+            <IcVault size={30} />
+          </div>
+          <h2 className="phosphor mt-4 text-lg font-bold uppercase tracking-widest">
+            No exchange linked
+          </h2>
+          <p className="mx-auto mt-2 max-w-md text-[13px] leading-relaxed text-white/50">
+            Your portfolio is empty because no exchange is connected yet. Link a read-only API
+            key and Sentinel will sync balances, PnL and your full decision log here.
+          </p>
+          <Link
+            href="/settings"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-signal-green to-accent-cyan px-5 py-2.5 text-sm font-semibold text-base-950 shadow-glow transition hover:brightness-110"
+          >
+            Connect an exchange <IcArrowRight size={16} />
+          </Link>
+          <p className="mt-4 font-mono text-[11px] text-white/25">
+            keys are encrypted (AES-256-GCM) before storage · read-only recommended
+          </p>
+        </GlassCard>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white">Portfolio Intelligence</h1>
-        <p className="mt-1 text-sm text-white/50">
-          Paper-trading account · performance, AI attribution, and the full decision log
-          (executed, rejected &amp; missed).
-        </p>
-      </div>
+      {header}
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Portfolio Value" value={fmtUsd(stats.totalValue, { compact: true })} sub="incl. stables" />
