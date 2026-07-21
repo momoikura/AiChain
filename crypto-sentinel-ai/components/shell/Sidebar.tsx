@@ -16,6 +16,7 @@ import {
   IcSources,
   IcOperator,
   IcSettings,
+  IcNews,
 } from "@/components/brand/icons";
 
 type IconType = (p: { size?: number; className?: string }) => JSX.Element;
@@ -26,6 +27,7 @@ const NAV: { href: string; label: string; icon: IconType }[] = [
   { href: "/memes", label: "Meme Radar", icon: IcMeme },
   { href: "/tokens", label: "Token Universe", icon: IcToken },
   { href: "/network", label: "Network Map", icon: IcNetwork },
+  { href: "/news", label: "News Intel", icon: IcNews },
   { href: "/portfolio", label: "Portfolio", icon: IcVault },
   { href: "/automation", label: "Automation", icon: IcAutomation },
   { href: "/profile", label: "Operator Console", icon: IcOperator },

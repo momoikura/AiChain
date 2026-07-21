@@ -14,6 +14,7 @@ import {
   IcSettings,
   IcOperator,
   IcSearch,
+  IcNews,
 } from "@/components/brand/icons";
 import { classNames } from "@/lib/format";
 
@@ -35,6 +36,7 @@ const NAV: Item[] = [
   { id: "meme", label: "Meme Radar", sub: "meme intel", href: "/memes", icon: <IcMeme size={18} />, kw: "meme radar" },
   { id: "tok", label: "Token Universe", sub: "all tokens", href: "/tokens", icon: <IcToken size={18} />, kw: "tokens universe list" },
   { id: "net", label: "Network Map", sub: "3D constellation", href: "/network", icon: <IcNetwork size={18} />, kw: "network wallet constellation graph" },
+  { id: "news", label: "News Intelligence", sub: "live headlines", href: "/news", icon: <IcNews size={18} />, kw: "news headlines wire rss coindesk cointelegraph decrypt" },
   { id: "port", label: "Portfolio", sub: "pnl · trades", href: "/portfolio", icon: <IcVault size={18} />, kw: "portfolio wallet pnl trades" },
   { id: "auto", label: "Automation", sub: "trading rules", href: "/automation", icon: <IcAutomation size={18} />, kw: "automation rules trading bot" },
   { id: "src", label: "Data Sources", sub: "38 providers", href: "/sources", icon: <IcSources size={18} />, kw: "sources providers apis" },
