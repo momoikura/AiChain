@@ -7,6 +7,8 @@ import { CyberBackdrop } from "@/components/fx/CyberBackdrop";
 import { BootSequence } from "@/components/fx/BootSequence";
 import { AIHologram } from "@/components/fx/AIHologram";
 import { CommandPalette } from "@/components/command/CommandPalette";
+import { AlertNotifier } from "@/components/notify/AlertNotifier";
+import { currentTick } from "@/lib/data/store";
 import { Providers } from "@/components/providers/Providers";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -35,6 +37,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <BootSequence />
       <AIHologram />
       <CommandPalette />
+      <AlertNotifier initialTick={currentTick()} />
       <Sidebar />
       <MobileNav />
       <div className="relative z-10 lg:pl-60">

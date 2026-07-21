@@ -6,6 +6,7 @@ import { IcArrowUpRight, IcBell, IcBiometric, IcCheck, IcKey, IcLock, IcMail, Ic
 import { GlassCard, SectionTitle } from "@/components/ui/primitives";
 import { classNames } from "@/lib/format";
 import { saveNotificationsAction, saveExchangeKeyAction } from "@/app/(app)/settings/actions";
+import { NotificationChannels } from "@/components/settings/NotificationChannels";
 
 type Level = "green" | "yellow" | "red";
 
@@ -55,6 +56,10 @@ export function SettingsView({ initialSettings, initialKeys, persist }: Settings
   function saveNotifications() {
     if (!persist) return;
     setNotifSaved(false);
+    // Mirror the threshold locally so the browser notifier can read it without a round-trip.
+    try {
+      localStorage.setItem("sentinel_min_level", minLevel);
+    } catch {}
     startNotif(async () => {
       await saveNotificationsAction({ channels, minLevel });
       setNotifSaved(true);
@@ -197,6 +202,9 @@ export function SettingsView({ initialSettings, initialKeys, persist }: Settings
             </div>
           ))}
         </div>
+
+        {/* Live delivery — browser push + outbound webhook */}
+        <NotificationChannels />
       </GlassCard>
     </div>
   );

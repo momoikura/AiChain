@@ -5,7 +5,7 @@ import { IcArrowRight, IcAutomation, IcBolt, IcCheck, IcClose, IcLock, IcMinus, 
 
 import { fmtUsd, timeAgo, classNames } from "@/lib/format";
 import { GlassCard, SectionTitle, Chip } from "@/components/ui/primitives";
-import { toggleRuleAction, runEvaluationAction } from "@/app/(app)/automation/actions";
+import { toggleRuleAction, runEvaluationAction, notifyAction } from "@/app/(app)/automation/actions";
 import type { Decision } from "@/lib/automation/evaluate";
 import type { RuleCondition, RuleMode, TradingRule } from "@/lib/types";
 
@@ -137,12 +137,42 @@ export function AutomationView({
   const [evalErr, setEvalErr] = useState<string | null>(null);
   const [running, startEval] = useTransition();
 
+  /**
+   * Push every fired (paper) decision out to the configured channels. Best
+   * effort: delivery problems must never break the evaluation UI.
+   */
+  async function deliverDecisions(ds: Decision[]) {
+    const fired = ds.filter((d) => d.status === "executed");
+    if (fired.length === 0) return;
+
+    for (const d of fired.slice(0, 5)) {
+      const title = `PAPER ${d.side.toUpperCase()} · ${d.symbol}`;
+      const body = `${d.ruleName} — confidence ${d.confidence} @ $${d.price.toLocaleString()} · ${d.reason}`;
+
+      if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+        try {
+          new Notification(title, { body, tag: `${d.ruleId}-${d.symbol}` });
+        } catch {}
+      }
+      try {
+        const hook = localStorage.getItem("sentinel_webhook");
+        if (hook) {
+          await notifyAction(hook, { level: d.side === "buy" ? "green" : "red", title, body });
+        }
+      } catch {}
+    }
+  }
+
   function runEvaluation() {
     setEvalErr(null);
     startEval(async () => {
       const res = await runEvaluationAction(emergencyStop);
-      if (res.ok) setDecisions(res.decisions);
-      else setEvalErr(res.error ?? "evaluation failed");
+      if (!res.ok) {
+        setEvalErr(res.error ?? "evaluation failed");
+        return;
+      }
+      setDecisions(res.decisions);
+      void deliverDecisions(res.decisions);
     });
   }
 

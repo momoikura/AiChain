@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "crypto-sentinel-ai",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "crypto-sentinel-ai"],
+      "port": 3000,
+      "autoPort": true
+    }
+  ]
+}

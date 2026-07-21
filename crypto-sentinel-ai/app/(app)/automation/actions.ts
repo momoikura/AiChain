@@ -7,6 +7,15 @@ import { getRules as ruleFixtures } from "@/lib/data/portfolio";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 
+/** Deliver a decision to the operator's webhook. Validated + SSRF-guarded in dispatch. */
+export async function notifyAction(
+  webhookUrl: string,
+  payload: { level: "green" | "yellow" | "red"; title: string; body: string }
+) {
+  const { sendWebhook } = await import("@/lib/notify/dispatch");
+  return sendWebhook(webhookUrl, payload);
+}
+
 /** Persist a rule's enabled state. Called from the Automation view on toggle. */
 export async function toggleRuleAction(id: string, enabled: boolean) {
   await setRuleEnabled(id, enabled);
