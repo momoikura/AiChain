@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { IcArrowRight, IcAutomation, IcBolt, IcLock, IcOperator, IcPulse, IcShield, IcThreat } from "@/components/brand/icons";
+import { useState, useTransition } from "react";
+import { IcArrowRight, IcAutomation, IcBolt, IcCheck, IcClose, IcLock, IcMinus, IcOperator, IcPulse, IcShield, IcSpinner, IcThreat } from "@/components/brand/icons";
 
 import { fmtUsd, timeAgo, classNames } from "@/lib/format";
 import { GlassCard, SectionTitle, Chip } from "@/components/ui/primitives";
-import { toggleRuleAction } from "@/app/(app)/automation/actions";
+import { toggleRuleAction, runEvaluationAction } from "@/app/(app)/automation/actions";
+import type { Decision } from "@/lib/automation/evaluate";
 import type { RuleCondition, RuleMode, TradingRule } from "@/lib/types";
 
 const MODE_META: Record<RuleMode, { icon: React.ReactNode; label: string; tone: string }> = {
@@ -132,6 +133,18 @@ export function AutomationView({
 }) {
   const [rules, setRules] = useState<TradingRule[]>(initialRules);
   const [emergencyStop, setEmergencyStop] = useState(false);
+  const [decisions, setDecisions] = useState<Decision[] | null>(null);
+  const [evalErr, setEvalErr] = useState<string | null>(null);
+  const [running, startEval] = useTransition();
+
+  function runEvaluation() {
+    setEvalErr(null);
+    startEval(async () => {
+      const res = await runEvaluationAction(emergencyStop);
+      if (res.ok) setDecisions(res.decisions);
+      else setEvalErr(res.error ?? "evaluation failed");
+    });
+  }
 
   const toggle = (id: string) => {
     let nextEnabled = false;
@@ -214,6 +227,95 @@ export function AutomationView({
           <div className="mt-1.5 tabular text-2xl font-bold text-white">≥ 90</div>
           <div className="text-[11px] text-white/40">min to auto-execute</div>
         </GlassCard>
+      </div>
+
+      {/* Rule engine */}
+      <div className="space-y-3">
+        <SectionTitle
+          title="Rule Engine"
+          subtitle="Evaluate every enabled rule against the live feed · paper only, never a real order"
+          right={
+            <button
+              onClick={runEvaluation}
+              disabled={running}
+              className={classNames(
+                "inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-bold uppercase tracking-wide transition",
+                "border-signal-green/40 bg-signal-green/10 text-signal-green hover:bg-signal-green/20",
+                running && "opacity-60"
+              )}
+            >
+              {running ? <IcSpinner size={14} className="animate-spin" /> : <IcBolt size={14} />}
+              {running ? "Evaluating…" : "Run evaluation"}
+            </button>
+          }
+        />
+
+        {evalErr && (
+          <GlassCard className="border-signal-red/30 bg-signal-red/5 p-3 text-[12px] text-signal-red">
+            {evalErr}
+          </GlassCard>
+        )}
+
+        {!decisions && !evalErr && (
+          <GlassCard className="p-5 text-[12px] leading-relaxed text-white/45">
+            Run the engine to see, for every enabled rule, whether it fires against the current
+            signal feed — and exactly which conditions passed or blocked it. Decisions are written
+            to your trade log as <span className="text-signal-green">paper</span> entries.
+          </GlassCard>
+        )}
+
+        {decisions && decisions.length === 0 && (
+          <GlassCard className="p-5 text-center text-[12px] text-white/45">
+            No enabled rules to evaluate.
+          </GlassCard>
+        )}
+
+        {decisions && decisions.length > 0 && (
+          <div className="space-y-2.5">
+            {decisions.map((d, i) => {
+              const meta =
+                d.status === "executed"
+                  ? { icon: <IcCheck size={14} />, tone: "text-signal-green", label: "Paper fill" }
+                  : d.status === "missed"
+                  ? { icon: <IcMinus size={14} />, tone: "text-signal-yellow", label: "No candidate" }
+                  : { icon: <IcClose size={14} />, tone: "text-signal-red", label: "Blocked" };
+              return (
+                <GlassCard key={i} className="p-4">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className={classNames("inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide", meta.tone)}>
+                      {meta.icon} {meta.label}
+                    </span>
+                    <span className="text-sm font-semibold text-white">{d.ruleName}</span>
+                    {d.symbol !== "—" && <Chip tone={d.side === "buy" ? "green" : "red"}>{d.side.toUpperCase()} {d.symbol}</Chip>}
+                    {d.confidence > 0 && (
+                      <span className="tabular text-[11px] text-white/40">confidence {d.confidence}</span>
+                    )}
+                    {d.qty > 0 && (
+                      <span className="tabular ml-auto text-[11px] text-white/50">
+                        {d.qty.toFixed(4)} @ {fmtUsd(d.price, { dp: d.price < 1 ? 4 : 2 })}
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-1.5 text-[12px] leading-relaxed text-white/55">{d.reason}</p>
+                  {(d.passed.length > 0 || d.failed.length > 0) && (
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {d.passed.map((p, k) => (
+                        <span key={`p${k}`} className="inline-flex items-center gap-1 rounded-md border border-signal-green/20 bg-signal-green/5 px-2 py-0.5 text-[10px] text-signal-green/90">
+                          <IcCheck size={10} /> {p}
+                        </span>
+                      ))}
+                      {d.failed.map((f, k) => (
+                        <span key={`f${k}`} className="inline-flex items-center gap-1 rounded-md border border-signal-red/20 bg-signal-red/5 px-2 py-0.5 text-[10px] text-signal-red/90">
+                          <IcClose size={10} /> {f}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </GlassCard>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div className="space-y-3">
