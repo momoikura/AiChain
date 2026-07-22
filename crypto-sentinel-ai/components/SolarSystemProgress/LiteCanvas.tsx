@@ -19,6 +19,17 @@ import type { AlertLevel } from "@/lib/types";
  * cap those at ~8–16 per page. This costs one shared rAF callback instead.
  */
 
+/** Trail segment count and its precomputed fade curve — constant across
+ *  instances and frames, so it is built once at module load. */
+const TRAIL_SEGMENTS = 12;
+const TRAIL_STEP = 1 / TRAIL_SEGMENTS;
+const TRAIL_FADE = Array.from({ length: TRAIL_SEGMENTS }, (_, i) =>
+  Math.pow(1 - i * TRAIL_STEP, 2.4)
+);
+
+/** Ambient motion reads identically at 30fps and costs half as much. */
+const LITE_FPS = 30;
+
 interface Particle {
   a: number;
   r: number;
@@ -131,6 +142,13 @@ export function LiteCanvas({
     nebulaGrad.addColorStop(0.6, `${palette.ocean}22`);
     nebulaGrad.addColorStop(1, "#00000000");
 
+    // Static: was previously rebuilt on every frame, which allocated one
+    // gradient object per instance per frame.
+    const termGrad = ctx.createLinearGradient(-planetR, -planetR, planetR, planetR);
+    termGrad.addColorStop(0, "#00000000");
+    termGrad.addColorStop(0.52, "#00000055");
+    termGrad.addColorStop(1, "#000000b8");
+
     /** Point on the orbital ellipse for progress p (0 = top, clockwise). */
     const orbitAt = (p: number) => {
       const th = -Math.PI / 2 + p * TAU;
@@ -210,24 +228,25 @@ export function LiteCanvas({
         // --- Plasma trail ---------------------------------------------------
         // Short bright tail immediately behind the star, drawn as decaying
         // segments so it fades along the arc rather than ending abruptly.
+        // Opacity goes through globalAlpha rather than an "#rrggbbaa" string:
+        // building those per segment allocated hundreds of short-lived strings
+        // every frame once a page carried a couple of dozen instances.
         const tailSpan = Math.min(p, 0.19) * TAU;
-        const segments = 16;
         ctx.lineCap = "round";
-        for (let i = 0; i < segments; i++) {
-          const f0 = i / segments;
-          const f1 = (i + 1) / segments;
-          const a0 = endAngle - tailSpan * f1;
+        ctx.strokeStyle = palette.key;
+        for (let i = 0; i < TRAIL_SEGMENTS; i++) {
+          const f0 = i * TRAIL_STEP;
+          const a0 = endAngle - tailSpan * (f0 + TRAIL_STEP);
           const a1 = endAngle - tailSpan * f0;
-          const fade = Math.pow(1 - f0, 2.4);
+          const fade = TRAIL_FADE[i];
           const flicker = 0.85 + 0.15 * Math.sin(t * 6 + i * 0.7);
+          ctx.globalAlpha = fade * flicker * 0.86;
           ctx.beginPath();
           ctx.ellipse(cx, cy, orbitRx, orbitRy, 0, a0, a1);
-          ctx.strokeStyle = `${palette.key}${Math.round(fade * flicker * 220)
-            .toString(16)
-            .padStart(2, "0")}`;
           ctx.lineWidth = Math.max(0.8, size * 0.02 * fade + size * 0.006);
           ctx.stroke();
         }
+        ctx.globalAlpha = 1;
         ctx.lineCap = "butt";
       }
 
@@ -297,10 +316,6 @@ export function LiteCanvas({
       ctx.restore();
 
       // Terminator: darken the side facing away from the key light.
-      const termGrad = ctx.createLinearGradient(-planetR, -planetR, planetR, planetR);
-      termGrad.addColorStop(0, "#00000000");
-      termGrad.addColorStop(0.52, "#00000055");
-      termGrad.addColorStop(1, "#000000b8");
       ctx.beginPath();
       ctx.arc(0, 0, planetR, 0, TAU);
       ctx.fillStyle = termGrad;
@@ -342,7 +357,7 @@ export function LiteCanvas({
       return;
     }
 
-    return subscribeTick(draw);
+    return subscribeTick(draw, LITE_FPS);
   }, [size, palette, animated, field]);
 
   return (

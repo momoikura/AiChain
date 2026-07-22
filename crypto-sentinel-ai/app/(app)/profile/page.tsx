@@ -1,6 +1,6 @@
 import { ProfileConsole } from "@/components/profile/ProfileConsole";
-import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { getAuthUser } from "@/lib/server/auth";
 import { listExchangeKeys } from "@/lib/server/db/keys";
 
 export const dynamic = "force-dynamic";
@@ -10,10 +10,9 @@ export default async function ProfilePage() {
   let connectedExchanges: string[] = [];
 
   if (isSupabaseConfigured()) {
-    const supabase = createClient();
-    const {
-      data: { user: authUser },
-    } = await supabase.auth.getUser();
+    // Shared with listExchangeKeys() below via the request-scoped cache, so
+    // this page performs one auth round-trip instead of two.
+    const authUser = await getAuthUser();
     if (authUser) {
       user = {
         name: (authUser.user_metadata?.name as string) || authUser.email || "Operator",

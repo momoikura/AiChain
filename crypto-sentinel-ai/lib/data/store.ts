@@ -12,9 +12,28 @@ export function currentTick(now: number = Date.now()): number {
   return Math.floor(now / 60_000);
 }
 
-export function getSnapshot(tick: number): EnginePass & { now: number } {
+type Snapshot = EnginePass & { now: number };
+
+/**
+ * Single-entry memo, keyed by tick.
+ *
+ * getSnapshot regenerates the whole token universe and re-runs the scoring
+ * engine. It is pure and deterministic in `tick`, so the result is safe to
+ * reuse — and it needs to be: several components subscribe to the feed
+ * independently (dashboard, meme radar, signal list, the alert notifier), and
+ * without this each one pays for its own full engine pass on every update.
+ */
+let memoTick: number | null = null;
+let memoValue: Snapshot | null = null;
+
+export function getSnapshot(tick: number): Snapshot {
+  if (memoTick === tick && memoValue) return memoValue;
+
   const now = 1_752_000_000_000 + tick * 60_000;
   const raw = generateTokens(tick);
   const pass = runEngine(raw, now);
-  return { ...pass, now };
+
+  memoTick = tick;
+  memoValue = { ...pass, now };
+  return memoValue;
 }

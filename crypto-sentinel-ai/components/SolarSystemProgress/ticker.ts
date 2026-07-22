@@ -11,7 +11,14 @@
 
 type TickFn = (elapsedSeconds: number, deltaSeconds: number) => void;
 
-const subscribers = new Set<TickFn>();
+interface Entry {
+  fn: TickFn;
+  /** Minimum seconds between invocations. 0 = every frame. */
+  minDelta: number;
+  last: number;
+}
+
+const subscribers = new Set<Entry>();
 let rafId = 0;
 let startTime = 0;
 let lastTime = 0;
@@ -23,7 +30,15 @@ function frame(now: number) {
   const delta = Math.min((now - (lastTime || now)) / 1000, 0.05);
   lastTime = now;
 
-  subscribers.forEach((fn) => fn(elapsed, delta));
+  subscribers.forEach((entry) => {
+    // Per-subscriber frame-rate cap. Ambient motion (drifting dust, twinkle,
+    // a slowly rotating planet) is indistinguishable at 30fps, and halving the
+    // canvas work matters a great deal when dozens of instances share a page.
+    const since = elapsed - entry.last;
+    if (since < entry.minDelta) return;
+    entry.last = elapsed;
+    entry.fn(elapsed, Math.min(since || delta, 0.05));
+  });
 
   rafId = subscribers.size ? requestAnimationFrame(frame) : 0;
 }
@@ -47,11 +62,12 @@ if (typeof document !== "undefined") {
   });
 }
 
-export function subscribeTick(fn: TickFn): () => void {
-  subscribers.add(fn);
+export function subscribeTick(fn: TickFn, fps = 0): () => void {
+  const entry: Entry = { fn, minDelta: fps > 0 ? 1 / fps : 0, last: -Infinity };
+  subscribers.add(entry);
   start();
   return () => {
-    subscribers.delete(fn);
+    subscribers.delete(entry);
     if (!subscribers.size) stop();
   };
 }

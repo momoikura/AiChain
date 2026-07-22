@@ -1,4 +1,5 @@
-import { createClient } from "@/lib/supabase/server";
+﻿import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/server/auth";
 import { getRules as defaultRuleFixtures } from "@/lib/data/portfolio";
 import type { TradingRule } from "@/lib/types";
 
@@ -38,9 +39,7 @@ function rowToRule(r: RuleRow): TradingRule {
 
 export async function listRules(): Promise<TradingRule[]> {
   const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) return [];
 
   const { data, error } = await supabase

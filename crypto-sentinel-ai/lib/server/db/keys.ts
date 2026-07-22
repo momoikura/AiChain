@@ -1,9 +1,10 @@
-import { createClient } from "@/lib/supabase/server";
+﻿import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/server/auth";
 import { encryptSecret, decryptSecret, maskSecret } from "@/lib/server/crypto";
 
 /**
  * Exchange API keys. Secrets are encrypted app-side (AES-256-GCM) before they
- * ever reach Supabase — the DB only stores ciphertext. Listing returns masked
+ * ever reach Supabase â€” the DB only stores ciphertext. Listing returns masked
  * previews, never plaintext.
  */
 
@@ -17,9 +18,7 @@ export interface ExchangeKeyView {
 
 export async function listExchangeKeys(): Promise<ExchangeKeyView[]> {
   const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) return [];
 
   const { data, error } = await supabase
@@ -44,9 +43,7 @@ export async function saveExchangeKey(input: {
   permissions?: string[];
 }): Promise<void> {
   const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) throw new Error("Not authenticated");
 
   const { error } = await supabase.from("exchange_keys").upsert(
@@ -71,9 +68,7 @@ export async function getExchangeCredentials(): Promise<
   { exchange: string; apiKey: string; apiSecret: string }[]
 > {
   const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) return [];
 
   const { data, error } = await supabase
@@ -90,7 +85,7 @@ export async function getExchangeCredentials(): Promise<
         apiSecret: decryptSecret(row.api_secret_cipher as string),
       });
     } catch {
-      // Ciphertext unreadable (e.g. APIKEY_ENC_SECRET rotated) — skip it.
+      // Ciphertext unreadable (e.g. APIKEY_ENC_SECRET rotated) â€” skip it.
     }
   }
   return out;

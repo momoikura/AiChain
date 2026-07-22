@@ -1,4 +1,5 @@
-import { createClient } from "@/lib/supabase/server";
+﻿import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/server/auth";
 
 export type AlertLevelPref = "green" | "yellow" | "red";
 
@@ -21,9 +22,7 @@ const DEFAULTS: NotificationSettings = {
 
 export async function getNotificationSettings(): Promise<NotificationSettings> {
   const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) return DEFAULTS;
 
   const { data, error } = await supabase
@@ -42,9 +41,7 @@ export async function getNotificationSettings(): Promise<NotificationSettings> {
 
 export async function saveNotificationSettings(s: NotificationSettings): Promise<void> {
   const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) throw new Error("Not authenticated");
 
   const { error } = await supabase.from("notification_settings").upsert(

@@ -20,11 +20,18 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   if (configured) {
     const supabase = createClient();
+    // getSession() reads the cookie locally; getUser() makes a blocking network
+    // round-trip to the Supabase auth server. The middleware already called
+    // getUser() for THIS request — that is the authoritative, remote-verified
+    // check, and an unauthenticated or forged cookie never reaches this layout.
+    // Repeating it here only to read a display name doubled the server latency
+    // of every single navigation for no additional security.
     const {
-      data: { user: authUser },
-    } = await supabase.auth.getUser();
-    // Middleware should have redirected already; this is defense in depth.
-    if (!authUser) redirect("/login");
+      data: { session },
+    } = await supabase.auth.getSession();
+    // Defense in depth: middleware should already have redirected.
+    if (!session?.user) redirect("/login");
+    const authUser = session.user;
     user = {
       name: (authUser.user_metadata?.name as string) || authUser.email || "Account",
       email: authUser.email || "",
