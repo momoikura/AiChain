@@ -1,5 +1,6 @@
 import type { AlertLevel } from "@/lib/types";
 import { classNames } from "@/lib/format";
+import { SolarSystemProgress } from "@/components/SolarSystemProgress";
 
 /** Compact sparkline. Colors by trend unless `color` given. */
 export function Sparkline({
@@ -92,7 +93,14 @@ export function AreaChart({
   );
 }
 
-/** Circular confidence gauge with color by level. */
+/**
+ * Confidence gauge, rendered as a miniature solar system.
+ *
+ * The API is unchanged from the original SVG arc, so every existing call site
+ * upgrades in place. The renderer tier is chosen from `size`: instances at list
+ * scale (< 88px) use the Canvas2D tier, larger single-instance placements get
+ * the full WebGL scene. See components/SolarSystemProgress for the rationale.
+ */
 export function ConfidenceRing({
   score,
   size = 120,
@@ -104,36 +112,7 @@ export function ConfidenceRing({
   level?: AlertLevel;
   label?: string;
 }) {
-  const stroke = 9;
-  const r = (size - stroke) / 2;
-  const c = 2 * Math.PI * r;
-  const pct = Math.max(0, Math.min(100, score)) / 100;
-  const color = level === "red" ? "#ff5470" : level === "yellow" ? "#f5c542" : "#22e39b";
-  return (
-    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={stroke} />
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={r}
-          fill="none"
-          stroke={color}
-          strokeWidth={stroke}
-          strokeLinecap="round"
-          strokeDasharray={c}
-          strokeDashoffset={c * (1 - pct)}
-          style={{ filter: `drop-shadow(0 0 6px ${color}66)`, transition: "stroke-dashoffset 0.8s ease" }}
-        />
-      </svg>
-      <div className="absolute flex flex-col items-center">
-        <span className="tabular text-2xl font-bold" style={{ color }}>
-          {Math.round(score)}
-        </span>
-        <span className="text-[8px] font-semibold uppercase tracking-widest text-white/40">{label}</span>
-      </div>
-    </div>
-  );
+  return <SolarSystemProgress score={score} size={size} level={level} label={label} />;
 }
 
 /** Horizontal component bar for score breakdowns. */
